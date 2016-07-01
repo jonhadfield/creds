@@ -1,0 +1,20 @@
+language: python
+python:
+  - "3.5"
+  - "3.4"
+  - "3.3"
+  - "2.7"
+  - "2.6"
+  - "pypy"
+  - "pypy3"
+  - "nightly"
+sudo: required
+dist: precise
+before_install:
+  - pip install pytest pytest-cov coveralls
+install:
+  - pip install .
+script:
+  - py.test --cov-report term-missing --cov creds
+after_success:
+  coveralls

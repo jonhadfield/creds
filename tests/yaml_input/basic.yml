@@ -1,0 +1,18 @@
+---
+users:
+  - name: peter
+    uid: 2000
+    gid: 2000
+    gecos: example gecos for peter
+    home_dir: /home/bigal
+    shell: /bin/bash
+    public_keys:
+      - "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBQkpRQUFBSUVBcUVpMG9xTlpsV3FLbFhxV0h6d0E1eWRsaVhpOWlwczNCMXI3TlBDUE5pMjkzdUpHbDc0SlAvRlJmTldnY2prdytjMS9rckJwZVlacm80NDg1MWZtdjc1dVoyWmM0SFhDYkovWnBSTnFjTG15dVV2RExOK2toaFRURmVlOHliQmNXMFVvQURHanM0RXRLYkRSQ1ZMeTRzUThOdWQwaHBzdVBrOGo5WFloTWtjPQ"
+  - name: brian
+    uid: 2001
+    gid: 2001
+    gecos: example gecos for brian
+    home_dir: /home/brian
+    shell: /bin/sh
+    public_keys:
+      - "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFEamk1eWNXemFiSUxBbXdPN3U0YUk4Q290RnBLU2owcGNWNUV3allUN0NJTmNTK1NoMW1CSmNkcEdEYS84ZC9zU3BuVG1pelhJM1kwUmRoL1R6dmNiVW94enlJOHBja2ErV2lqSjBuVGYxZ3RRL3RoZ3UzTGdVOGxGWEZJVnRUY1h1LzlrZDBLekpFQWIwMFhzSVZOSVY2ZkVnZWYxZGJ6eG0yTGRLUDRwR0N5NC8yNWxoQ1VySEthYWpqQlBGc09lZERmWWZyV2RBYmpEVzBYMGNUMmF5UTV1b2lkditKM3JqZWpTOUVMN3plbytwSHlUR1dZcC9DdkpvaklEWm1yTWJvcGx1Sk1mYnFBOFNwTDJWeFhMRWdQNUp6MFZETkNuTEtDSzZ2SWJoTWtJWDhsRTVnQ2I5Nzh4cDVjVk52MXFWQWFYVlJ4aXhYbEFXdllWWTBIdG4"
