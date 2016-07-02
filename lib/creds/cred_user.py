@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import (unicode_literals, print_function)
 
-from creds.constants import *
+from external.six.six import text_type
 from creds.utils import check_platform
 
 class User(object):
