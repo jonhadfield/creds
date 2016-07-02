@@ -5,15 +5,14 @@ import json
 
 import yaml
 
+from creds.constants import *
 from creds.cred_user import User
 from creds.ssh import read_authorized_keys
 from creds.ssh.public_key import PublicKey
-from external.six.six import text_type
-from creds.constants import *
 
 
 class Users(object):
-    def __init__(self, input_list=None, config=None):
+    def __init__(self, input_list=None):
         self.user_list = input_list
 
     def __str__(self):
