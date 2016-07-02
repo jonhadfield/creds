@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import (unicode_literals, print_function)
 
-from external.six.six import text_type
 from creds.utils import check_platform
+from external.six.six import text_type
+
 
 class User(object):
     def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None, home_dir=None, shell=None,
