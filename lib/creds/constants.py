@@ -4,10 +4,11 @@ from __future__ import (unicode_literals, print_function)
 PURGE_UNDEFINED = False  # Purge any users that fall between UID_MIN and UID_MAX that are not defined
 
 import os
-from external.six.six import text_type, string_types, PY2, PY3
+from external.six.six import text_type, PY2, PY3
 
 DEFAULT_UID_MIN = 1000  # The lowest uid to consider safe to manage
 DEFAULT_UID_MAX = 60000  # The maximum uid to consider safe to manage
+
 
 def login_defs():
     uid_min = None
@@ -20,7 +21,7 @@ def login_defs():
             if PY3:
                 line = str(line)
             if PY2:
-                line = line.decode('UTF-8')
+                line = line.decode(text_type('UTF-8'))
             if line.startswith(text_type('UID_MIN')):
                 uid_min = int(line.split()[1].strip())
             if line.startswith(text_type('UID_MAX')):
