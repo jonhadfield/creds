@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import (unicode_literals, print_function)
 
-from external.six.six import text_type
 from creds.constants import *
 
 
@@ -19,10 +18,10 @@ class User(object):
 
     @property
     def gecos(self):
-        if self._gecos.startswith('\'') and self._gecos.endswith('\''):
+        if self._gecos.startswith(text_type('\'')) and self._gecos.endswith(text_type('\'')):
             self._gecos = '\"{0}\"'.format(self._gecos[1:-1])
             return self._gecos
-        elif self._gecos.startswith('\"') and self._gecos.endswith('\"'):
+        elif self._gecos.startswith(text_type('\"')) and self._gecos.endswith(text_type('\"')):
             return self._gecos
         else:
             return '\"{0}\"'.format(self._gecos)
