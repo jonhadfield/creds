@@ -6,6 +6,7 @@ import shlex
 
 from creds.cred_plan import (create_plan, execute_plan)
 from creds.cred_user import User
+from creds.configuration import CredsConfig
 from creds.cred_users import Users
 from creds.ssh.public_key import PublicKey
 from creds.utils import execute_command
