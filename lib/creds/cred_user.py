@@ -2,6 +2,7 @@
 from __future__ import (unicode_literals, print_function)
 
 from external.six.six import text_type
+from creds.constants import *
 
 
 class User(object):

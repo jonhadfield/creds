@@ -6,7 +6,6 @@ import shlex
 
 from creds.cred_plan import (create_plan, execute_plan)
 from creds.cred_user import User
-from creds.configuration import CredsConfig
 from creds.cred_users import Users
 from creds.ssh.public_key import PublicKey
 from creds.utils import execute_command
@@ -46,7 +45,7 @@ def test_create_and_execute_plan_to_create_new_user():
              public_keys=public_keys))
     provided_users = Users(input_list=provided_users)
 
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users)
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True)
     assert plan[0]['state'] == 'missing'
     assert plan[0]['proposed_user'].name == "testuserx1234"
     assert plan[0]['proposed_user'].home_dir == "/home/testuserx1234"
@@ -60,7 +59,7 @@ def test_create_and_execute_plan_to_create_new_user():
     execute_plan(plan=plan)
 
     current_users = Users.from_passwd()
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users)
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True)
     assert plan[0]['action'] == 'update'
     delete_test_user_and_group()
 
@@ -117,7 +116,7 @@ def test_execute_plan_to_create_new_user_with_clashing_uid():
     provided_users = list()
     provided_users.append(User(name='testuserx12345', uid=59999, gecos='test user gecos'))
     provided_users = Users(input_list=provided_users)
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users)
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True)
     assert plan[0]['error'] == 'uid_clash'
     execute_plan(plan=plan)
     delete_test_user_and_group()

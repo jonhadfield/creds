@@ -6,10 +6,10 @@ import json
 import yaml
 
 from creds.cred_user import User
-from creds.configuration import config
 from creds.ssh import read_authorized_keys
 from creds.ssh.public_key import PublicKey
 from external.six.six import text_type
+from creds.constants import *
 
 
 class Users(object):
@@ -94,13 +94,16 @@ class Users(object):
             return cls(input_list=input_list)
 
     @classmethod
-    def from_passwd(cls):
+    def from_passwd(cls, uid_min=None, uid_max=None):
         import pwd
         input_list = list()
         passwd_list = pwd.getpwall()
-
+        if not uid_min:
+            uid_min = UID_MIN
+        if not uid_max:
+            uid_max = UID_MAX
         for pwd_entry in passwd_list:
-            if config.uid_min <= pwd_entry.pw_uid <= config.uid_max:
+            if uid_min <= pwd_entry.pw_uid <= uid_max:
                 user = User(name=text_type(pwd_entry.pw_name), passwd=text_type(pwd_entry.pw_passwd),
                             uid=pwd_entry.pw_uid,
                             gid=pwd_entry.pw_gid,

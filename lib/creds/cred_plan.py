@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import (unicode_literals, print_function)
 
-from creds.configuration import config
+from creds import constants
 from creds.ssh import write_authorized_keys
 from creds.user_utils import (generate_add_user_command, generate_modify_user_command, generate_delete_user_command,
                               compare_user, get_user_by_uid)
@@ -9,10 +9,18 @@ from creds.utils import execute_command
 from external.six import six
 
 
-def create_plan(existing_users=None, proposed_users=None):
+def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, protected_users=None,
+                allow_non_unique_id=None):
     """ Determine what changes are required """
     plan = list()
     proposed_usernames = list()
+
+    if not purge_undefined:
+        purge_undefined = constants.PURGE_UNDEFINED
+    if not protected_users:
+        protected_users = constants.PROTECTED_USERS
+    if not allow_non_unique_id:
+        allow_non_unique_id = constants.ALLOW_NON_UNIQUE_ID
 
     # Create list of modifications to make based on proposed users compared to existing users
     for proposed_user in proposed_users.user_list:
@@ -20,7 +28,7 @@ def create_plan(existing_users=None, proposed_users=None):
         user_matching_name = existing_users.describe_users(users_filter=dict(name=proposed_user.name))
         user_matching_id = get_user_by_uid(uid=proposed_user.uid, user_list=existing_users)
         # If user does not exist
-        if not config.allow_non_unique_id and user_matching_id and not user_matching_name:
+        if not allow_non_unique_id and user_matching_id and not user_matching_name:
             plan.append(
                 dict(action='fail', error='uid_clash', proposed_user=proposed_user, state='existing', result=None))
         elif not user_matching_name:
@@ -31,11 +39,11 @@ def create_plan(existing_users=None, proposed_users=None):
             plan.append(
                 dict(action='update', proposed_user=proposed_user, state='existing', user_comparison=user_comparison))
     # Application of the proposed user list will not result in deletion of users that need to be removed
-    # If 'PURGE_DEFINED' then look for existing users that are not defined in proposed usernames and mark for removal
-    if config.purge_undefined:
+    # If 'PURGE_UNDEFINED' then look for existing users that are not defined in proposed usernames and mark for removal
+    if purge_undefined:
         for existing_user in existing_users.user_list:
             if existing_user.name not in proposed_usernames:
-                if existing_user.name not in config.protected_users:
+                if existing_user.name not in protected_users:
                     plan.append(dict(action='delete', username=existing_user.name, state='existing'))
     return plan
 

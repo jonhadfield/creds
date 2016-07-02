@@ -3,6 +3,8 @@
 from __future__ import (unicode_literals, print_function)
 
 import shlex
+from creds.constants import *
+
 
 # TODO: Detect based on OS
 USERMOD = '/usr/sbin/usermod'
