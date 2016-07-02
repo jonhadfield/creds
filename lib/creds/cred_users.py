@@ -5,11 +5,13 @@ import json
 
 import yaml
 
-from creds.constants import *
+from creds.constants import UID_MAX, UID_MIN
 from creds.cred_user import User
 from creds.ssh import read_authorized_keys
 from creds.ssh.public_key import PublicKey
 from creds.utils import check_platform
+from external.six.six import text_type
+
 
 class Users(object):
     def __init__(self, input_list=None):
