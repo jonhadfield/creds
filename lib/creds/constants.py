@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import (unicode_literals, print_function)
 
-PURGE_UNDEFINED = False  # Purge any users that fall between UID_MIN and UID_MAX that are not defined
-
 import os
+
 from external.six.six import text_type, PY2, PY3
+
+SUPPORTED_PLATFORMS = ['Linux']
+
+PURGE_UNDEFINED = False  # Purge any users that fall between UID_MIN and UID_MAX that are not defined
 
 DEFAULT_UID_MIN = 1000  # The lowest uid to consider safe to manage
 DEFAULT_UID_MAX = 60000  # The maximum uid to consider safe to manage

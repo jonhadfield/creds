@@ -2,11 +2,12 @@
 from __future__ import (unicode_literals, print_function)
 
 from creds.constants import *
-
+from creds.utils import check_platform
 
 class User(object):
     def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None, home_dir=None, shell=None,
                  public_keys=None):
+        check_platform()
         self.name = name
         self.passwd = passwd
         self.uid = uid

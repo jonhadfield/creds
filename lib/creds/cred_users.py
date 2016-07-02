@@ -9,10 +9,11 @@ from creds.constants import *
 from creds.cred_user import User
 from creds.ssh import read_authorized_keys
 from creds.ssh.public_key import PublicKey
-
+from creds.utils import check_platform
 
 class Users(object):
     def __init__(self, input_list=None):
+        check_platform()
         self.user_list = input_list
 
     def __str__(self):

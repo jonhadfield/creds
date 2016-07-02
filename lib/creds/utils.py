@@ -3,11 +3,18 @@
 from __future__ import (unicode_literals, print_function)
 
 import base64
+import platform
 import random
 import string
 import subprocess
 
+from creds.constants import SUPPORTED_PLATFORMS
 from external.six import six
+
+
+def check_platform():
+    if not platform.system() in SUPPORTED_PLATFORMS:
+        raise OSError('Linux is the only supported platform for this library.')
 
 
 def execute_command(command=None):
