@@ -3,6 +3,7 @@
 from __future__ import (unicode_literals, print_function)
 
 import base64
+import os
 import platform
 import random
 import string
@@ -10,6 +11,13 @@ import subprocess
 
 from creds.constants import SUPPORTED_PLATFORMS
 from external.six import six
+
+
+def sudo_check():
+    if os.geteuid() != 0:
+        return 'sudo'
+    else:
+        return ''
 
 
 def check_platform():
