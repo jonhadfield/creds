@@ -32,21 +32,3 @@ build:
     push:
 
 
-
-integrations:
-#if you are using integrations, you'll need to set it up in two places. Project settings & here in this section of the yml.
-    notifications:
-        - integrationName:
-          type:
-          recipients:
-          branches:
-          on_start:
-          on_success:
-          on_failure:
-          on_changed:
-
-    hub:
-        - integrationName:
-          type:
-          agent_only:
-          branches:
