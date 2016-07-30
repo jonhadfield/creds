@@ -45,7 +45,8 @@ def test_create_and_execute_plan_to_create_new_user():
              public_keys=public_keys))
     provided_users = Users(input_list=provided_users)
 
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True)
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
+                       protected_users=['travis'])
     assert plan[0]['state'] == 'missing'
     assert plan[0]['proposed_user'].name == "testuserx1234"
     assert plan[0]['proposed_user'].home_dir == "/home/testuserx1234"
@@ -54,15 +55,13 @@ def test_create_and_execute_plan_to_create_new_user():
     assert plan[0]['proposed_user'].gecos == '\"test user gecos\"'
     assert plan[0]['proposed_user'].shell == '/bin/false'
     assert type(plan[0]['proposed_user'].public_keys[0].raw) == six.text_type
-
     assert plan[0]['proposed_user'].public_keys[0].raw == six.text_type(PUBLIC_KEYS[0]['raw'])
     execute_plan(plan=plan)
 
     current_users = Users.from_passwd()
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True)
-    for item in plan:
-        print(item)
-    assert plan[0]['action'] == 'update'
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
+                       protected_users=['travis'])
+    assert not plan
     delete_test_user_and_group()
 
 
@@ -77,7 +76,7 @@ def test_create_and_execute_plan_to_create_identical_user():
     execute_plan(plan=plan)
     current_users = Users.from_passwd()
     plan = create_plan(existing_users=current_users, proposed_users=provided_users)
-    assert plan[0]['action'] == 'update'
+    assert not plan
     delete_test_user_and_group()
 
 
