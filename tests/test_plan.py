@@ -60,6 +60,8 @@ def test_create_and_execute_plan_to_create_new_user():
 
     current_users = Users.from_passwd()
     plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True)
+    for item in plan:
+        print(item)
     assert plan[0]['action'] == 'update'
     delete_test_user_and_group()
 

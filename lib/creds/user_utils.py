@@ -28,14 +28,12 @@ def generate_add_user_command(proposed_user=None):
     if proposed_user.shell:
         command = '{0} -s {1}'.format(command, proposed_user.shell)
     command = '{0} {1}'.format(command, proposed_user.name)
-    print(command)
     return shlex.split(str(command))
 
 
 def generate_modify_user_command(task=None):
     name = task['proposed_user'].name
     comparison_result = task['user_comparison']['result']
-    print(comparison_result)
     command = '{0} {1}'.format(SUDO, USERMOD)
     if comparison_result.get('replacement_uid_value'):
         command = '{0} -u {1}'.format(command, comparison_result.get('replacement_uid_value'))
@@ -48,13 +46,11 @@ def generate_modify_user_command(task=None):
     if comparison_result.get('replacement_home_dir_value'):
         command = '{0} -d {1}'.format(command, comparison_result.get('replacement_home_dir_value'))
     command = '{0} {1}'.format(command, name)
-    print(command)
     return shlex.split(str(command))
 
 
 def generate_delete_user_command(username=None):
     command = '{0} {1} -r {2}'.format(SUDO, USERDEL, username)
-    print(command)
     return shlex.split(str(command))
 
 

@@ -36,11 +36,7 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
         # If they do, then compare
         else:
             user_comparison = compare_user(passed_user=proposed_user, user_list=existing_users)
-            print('USER COMPARISON')
-            print(user_comparison)
             if user_comparison.get('result'):
-                print('got a result')
-                print(user_comparison.get('result'))
                 plan.append(
                     dict(action='update', proposed_user=proposed_user, state='existing', user_comparison=user_comparison))
     # Application of the proposed user list will not result in deletion of users that need to be removed
@@ -71,7 +67,6 @@ def execute_plan(plan=None):
             execution_result.append(dict(task=task, command_output=command_output))
         elif action == 'update':
             result = task['user_comparison'].get('result')
-            print(result)
             # Don't modify user if only keys have changed
             action_count = 0
             for k, _ in six.iteritems(result):
