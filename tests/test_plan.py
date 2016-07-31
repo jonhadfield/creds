@@ -46,7 +46,7 @@ def test_create_and_execute_plan_to_create_new_user():
     provided_users = Users(input_list=provided_users)
 
     plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
-                       protected_users=['travis'])
+                       protected_users=['travis', 'couchdb', 'ubuntu'])
     assert plan[0]['state'] == 'missing'
     assert plan[0]['proposed_user'].name == "testuserx1234"
     assert plan[0]['proposed_user'].home_dir == "/home/testuserx1234"
@@ -60,7 +60,7 @@ def test_create_and_execute_plan_to_create_new_user():
 
     current_users = Users.from_passwd()
     plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
-                       protected_users=['travis'])
+                       protected_users=['travis', 'couchdb', 'ubuntu'])
     assert not plan
     delete_test_user_and_group()
 

@@ -1,3 +1,14 @@
+#machine:
+#  python:
+#    version: 2.7.12
+
+
+machine:
+  post:
+    - pyenv global 2.7.9 3.4.2
+
+  services:
+    - docker
 dependencies:
   pre:
     - pip install pytest
