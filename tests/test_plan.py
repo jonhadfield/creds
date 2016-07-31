@@ -8,7 +8,7 @@ from creds.cred_plan import (create_plan, execute_plan)
 from creds.cred_user import User
 from creds.cred_users import Users
 from creds.ssh.public_key import PublicKey
-from creds.utils import execute_command
+from creds.utils import (execute_command, sudo_check)
 from external.six import six
 from .sample_data import PUBLIC_KEYS
 
@@ -208,11 +208,11 @@ def delete_test_user_and_group():
 
 def create_test_user():
     command = shlex.split(
-        str('{0} {1} -u 59999 -c \"test user gecos\" -m  -s /bin/bash testuserx1234'.format(SUDO, USERADD)))
+        str('{0} {1} -u 59999 -c \"test user gecos\" -m  -s /bin/bash testuserx1234'.format(sudo_check(), USERADD)))
     assert execute_command(command=command)
 
 
 def create_test_group():
     command = shlex.split(
-        str('{0} {1} -g 59999 testuserx1234'.format(SUDO, GROUPADD)))
+        str('{0} {1} -g 59999 testuserx1234'.format(sudo_check(), GROUPADD)))
     assert execute_command(command=command)
