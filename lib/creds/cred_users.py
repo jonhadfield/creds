@@ -76,7 +76,7 @@ class Users(object):
 
     @classmethod
     def from_json(cls, file_loc=None):
-        with open(file_loc) as stream:
+        with open(file_loc, encoding='utf-8') as stream:
             try:
                 users_json = json.load(stream)
             except ValueError:
