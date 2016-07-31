@@ -18,7 +18,6 @@ USERADD = '/usr/sbin/useradd'
 USERDEL = '/usr/sbin/userdel'
 GROUPADD = '/usr/sbin/groupadd'
 GROUPDEL = '/usr/sbin/groupdel'
-SUDO = '/usr/bin/sudo'
 
 
 def test_users_instance_creation():
@@ -198,9 +197,9 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
 
 
 def delete_test_user_and_group():
-    del_user_command = shlex.split(str('{0} {1} -r -f testuserx1234'.format(SUDO, USERDEL)))
+    del_user_command = shlex.split(str('{0} {1} -r -f testuserx1234'.format(sudo_check(), USERDEL)))
     execute_command(command=del_user_command)
-    del_group_command = shlex.split(str('{0} {1} testuserx1234'.format(SUDO, GROUPDEL)))
+    del_group_command = shlex.split(str('{0} {1} testuserx1234'.format(sudo_check(), GROUPDEL)))
     execute_command(command=del_group_command)
     del_user_ssh_dir_command = shlex.split(str('/bin/rm -rf /tmp/.ssh'))
     execute_command(command=del_user_ssh_dir_command)
