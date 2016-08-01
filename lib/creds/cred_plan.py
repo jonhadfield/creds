@@ -38,7 +38,8 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
             user_comparison = compare_user(passed_user=proposed_user, user_list=existing_users)
             if user_comparison.get('result'):
                 plan.append(
-                    dict(action='update', proposed_user=proposed_user, state='existing', user_comparison=user_comparison))
+                    dict(action='update', proposed_user=proposed_user, state='existing',
+                         user_comparison=user_comparison))
     # Application of the proposed user list will not result in deletion of users that need to be removed
     # If 'PURGE_UNDEFINED' then look for existing users that are not defined in proposed usernames and mark for removal
     if purge_undefined:

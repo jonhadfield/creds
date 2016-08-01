@@ -8,11 +8,11 @@ from creds.ssh.public_key import PublicKey
 from creds.utils import execute_command, random_string, sudo_check
 from external.six.six import text_type
 
+
 def read_authorized_keys(username=None):
     authorized_keys_path = '{0}/.ssh/authorized_keys'.format(os.path.expanduser('~{0}'.format(username)))
     rnd_chars = random_string()
     tmp_authorized_keys_path = '/tmp/authorized_keys_{0}_{1}'.format(username, rnd_chars)
-
 
     copy_result = execute_command(
         shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), authorized_keys_path, tmp_authorized_keys_path))))
@@ -42,7 +42,8 @@ def write_authorized_keys(user=None):
         authorized_keys.append('{0}\n'.format(key.raw))
     with open(tmp_authorized_keys_path, mode=text_type('w+')) as keys_file:
         keys_file.writelines(authorized_keys)
-    execute_command(shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), tmp_authorized_keys_path, authorized_keys_path))))
+    execute_command(
+        shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), tmp_authorized_keys_path, authorized_keys_path))))
     execute_command(shlex.split(str('{0} chown -R {1} {2}'.format(sudo_check(), user.name, authorized_keys_dir))))
     execute_command(shlex.split(str('{0} chmod 700 {1}'.format(sudo_check(), authorized_keys_dir))))
     execute_command(shlex.split(str('{0} chmod 600 {1}'.format(sudo_check(), authorized_keys_path))))

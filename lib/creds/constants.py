@@ -19,7 +19,7 @@ def login_defs():
     uid_max = None
     login_defs_path = '/etc/login.defs'
     if os.path.exists(login_defs_path):
-        with io.open(text_type(login_defs_path),  encoding=text_type('utf-8')) as log_defs_file:
+        with io.open(text_type(login_defs_path), encoding=text_type('utf-8')) as log_defs_file:
             login_data = log_defs_file.readlines()
         for line in login_data:
             if PY3:
