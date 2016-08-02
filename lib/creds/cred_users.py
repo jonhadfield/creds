@@ -46,6 +46,7 @@ class Users(object):
             if user_dict.get('public_keys'):
                 public_keys = [PublicKey(b64encoded=x) for x in user_dict.get('public_keys')]
             input_list.append(User(name=user_dict.get('name'),
+                                   passwd=user_dict.get('passwd'),
                                    uid=user_dict.get('uid'),
                                    gid=user_dict.get('gid'),
                                    home_dir=user_dict.get('home_dir'),
@@ -65,6 +66,7 @@ class Users(object):
                     if user_dict.get('public_keys'):
                         public_keys = [PublicKey(b64encoded=x) for x in user_dict.get('public_keys')]
                     input_list.append(User(name=user_dict.get('name'),
+                                           passwd=user_dict.get('passwd'),
                                            uid=user_dict.get('uid'),
                                            gid=user_dict.get('gid'),
                                            home_dir=user_dict.get('home_dir'),
@@ -88,6 +90,7 @@ class Users(object):
                 if user_dict.get('public_keys'):
                     public_keys = [PublicKey(b64encoded=x) for x in user_dict.get('public_keys')]
                 input_list.append(User(name=user_dict.get('name'),
+                                       passwd=user_dict.get('passwd'),
                                        uid=user_dict.get('uid'),
                                        gid=user_dict.get('gid'),
                                        home_dir=user_dict.get('home_dir'),

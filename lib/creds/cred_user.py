@@ -6,8 +6,20 @@ from external.six.six import text_type
 
 
 class User(object):
-    def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None, home_dir=None, shell=None,
-                 public_keys=None):
+    """ Representation of a user and their related credentials. """
+
+    def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None,
+                 home_dir=None, shell=None, public_keys=None):
+        """ Make a user.
+        :param name: user name
+        :param passwd: password
+        :param uid: user id
+        :param gid: group id
+        :param gecos: GECOS field
+        :param home_dir: home directory
+        :param shell: shell
+        :param public_keys: list of public key instances
+        """
         check_platform()
         self.name = name
         self.passwd = passwd
