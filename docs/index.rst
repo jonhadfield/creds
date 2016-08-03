@@ -13,6 +13,7 @@ Contents:
 
    installation
    usage
+   api
 
 
 Indices and tables
