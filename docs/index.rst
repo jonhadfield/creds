@@ -1,19 +1,16 @@
-.. creds documentation master file, created by
-   sphinx-quickstart on Wed Aug  3 18:50:38 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-
-=================================
+=====
 creds
-=================================
+=====
+
+A python library for user management.
 
 Contents:
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 3
 
-   creds
+   installation
+   usage
 
 
 Indices and tables
