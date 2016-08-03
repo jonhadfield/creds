@@ -4,6 +4,8 @@ creds
 
 A python library for user management.
 
+Release v\ |version|.
+
 Contents:
 
 .. toctree::
