@@ -22,7 +22,7 @@ def sudo_check():
 
 def check_platform():
     if not platform.system() in SUPPORTED_PLATFORMS:
-        raise OSError('Linux is the only supported platform for this library.')
+        raise OSError('Linux is currently the only supported platform for this library.')
 
 
 def execute_command(command=None):
@@ -49,7 +49,7 @@ def base64decode(_input=None):
     if missing_padding:
         _input += '=' * missing_padding
     if six.PY2:
-        return base64.decodestring(_input)
+        return base64.decodebytes(_input)
     elif six.PY3:
         if isinstance(_input, bytes):
             return base64.b64decode(_input).decode('UTF-8')

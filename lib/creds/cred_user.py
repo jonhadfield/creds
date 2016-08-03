@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+""" This module contains class:
+User:
+A representation of a user entry in a passwd file plus their credentials.
+"""
 from __future__ import (unicode_literals, print_function)
 
 from creds.utils import check_platform
@@ -11,14 +15,16 @@ class User(object):
     def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None,
                  home_dir=None, shell=None, public_keys=None):
         """ Make a user.
-        :param name: user name
-        :param passwd: password
-        :param uid: user id
-        :param gid: group id
-        :param gecos: GECOS field
-        :param home_dir: home directory
-        :param shell: shell
-        :param public_keys: list of public key instances
+
+        Kwargs:
+            name (str): user name.
+            passwd (str): password
+            uid (int): user id
+            gid (int): group id
+            gecos (str): GECOS field
+            home_dir (str): home directory
+            shell (str): shell
+            public_keys (list): list of public key instances
         """
         check_platform()
         self.name = name
@@ -32,6 +38,11 @@ class User(object):
 
     @property
     def gecos(self):
+        """ Force double quoted gecos.
+
+        Returns:
+            str: The double quoted gecos.
+        """
         if self._gecos.startswith(text_type('\'')) and self._gecos.endswith(text_type('\'')):
             self._gecos = '\"{0}\"'.format(self._gecos[1:-1])
             return self._gecos
@@ -46,6 +57,11 @@ class User(object):
     # TODO: Fix - it's nasty
     @staticmethod
     def format_val(val=None):
+        """ Double quote string, otherwise return as is.
+
+        Kwargs:
+            val: something bad
+        """
         if val:
             if isinstance(val, text_type):
                 return "\"{0}\"".format(val)
