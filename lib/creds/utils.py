@@ -49,7 +49,7 @@ def base64decode(_input=None):
     if missing_padding:
         _input += '=' * missing_padding
     if six.PY2:
-        return base64.decodebytes(_input)
+        return base64.decodestring(_input)
     elif six.PY3:
         if isinstance(_input, bytes):
             return base64.b64decode(_input).decode('UTF-8')
