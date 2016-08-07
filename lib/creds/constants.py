@@ -15,7 +15,7 @@ DEFAULT_UID_MAX = 60000  # The maximum uid to consider safe to manage
 
 
 def login_defs():
-
+    """ Discover the minimum and maximum UID number. """
     uid_min = None
     uid_max = None
     login_defs_path = '/etc/login.defs'
