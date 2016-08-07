@@ -4,7 +4,7 @@ from __future__ import (unicode_literals, print_function)
 import os
 import io
 
-from external.six.six import text_type, PY2, PY3
+from external.six import text_type, PY2, PY3
 
 SUPPORTED_PLATFORMS = ['Linux']
 

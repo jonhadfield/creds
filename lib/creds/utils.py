@@ -10,7 +10,7 @@ import string
 import subprocess
 
 from creds.constants import SUPPORTED_PLATFORMS
-from external.six import six
+from external.six import (PY2, PY3)
 
 
 def sudo_check():
@@ -35,9 +35,9 @@ def random_string(length=10):
 
 
 def base64encode(_input=None):
-    if six.PY2:
+    if PY2:
         return base64.b64encode(_input)
-    elif six.PY3:
+    elif PY3:
         if isinstance(_input, bytes):
             return base64.b64encode(_input).decode('UTF-8')
         elif isinstance(_input, str):
@@ -48,9 +48,9 @@ def base64decode(_input=None):
     missing_padding = 4 - len(_input) % 4
     if missing_padding:
         _input += '=' * missing_padding
-    if six.PY2:
+    if PY2:
         return base64.decodestring(_input)
-    elif six.PY3:
+    elif PY3:
         if isinstance(_input, bytes):
             return base64.b64decode(_input).decode('UTF-8')
         elif isinstance(_input, str):

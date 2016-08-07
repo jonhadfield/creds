@@ -6,7 +6,7 @@ from creds.ssh import write_authorized_keys
 from creds.user_utils import (generate_add_user_command, generate_modify_user_command,
                               generate_delete_user_command, compare_user, get_user_by_uid)
 from creds.utils import execute_command
-from external.six import six
+from external.six import iteritems
 
 
 def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, protected_users=None,
@@ -70,7 +70,7 @@ def execute_plan(plan=None):
             result = task['user_comparison'].get('result')
             # Don't modify user if only keys have changed
             action_count = 0
-            for k, _ in six.iteritems(result):
+            for k, _ in iteritems(result):
                 if '_action' in k:
                     action_count += 1
             command_output = None

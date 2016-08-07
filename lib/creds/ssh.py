@@ -6,11 +6,13 @@ import shlex
 
 from creds.utils import base64decode, base64encode
 from creds.utils import execute_command, random_string, sudo_check
-from external.six.six import text_type
+from external.six import text_type
 
 
 class PublicKey(object):
+    """ Representation of a public key. """
     def __init__(self, raw=None, b64encoded=None):
+
         if not any((raw, b64encoded)):
             raise AttributeError('Key not provided')
         self._raw = raw

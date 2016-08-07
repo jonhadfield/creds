@@ -12,7 +12,7 @@ from creds.constants import UID_MAX, UID_MIN
 from creds.ssh import PublicKey
 from creds.ssh import read_authorized_keys
 from creds.utils import check_platform
-from external.six.six import text_type
+from external.six import text_type
 
 
 class Users(object):

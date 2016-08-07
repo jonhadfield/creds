@@ -8,7 +8,7 @@ from creds.plan import (create_plan, execute_plan)
 from creds.users import (Users, User)
 from creds.ssh import PublicKey
 from creds.utils import (execute_command, sudo_check)
-from external.six import six
+from external.six import text_type
 from .sample_data import PUBLIC_KEYS
 
 # TODO: Detect based on OS
@@ -52,8 +52,8 @@ def test_create_and_execute_plan_to_create_new_user():
     assert plan[0]['proposed_user'].gid == 59999
     assert plan[0]['proposed_user'].gecos == '\"test user gecos\"'
     assert plan[0]['proposed_user'].shell == '/bin/false'
-    assert type(plan[0]['proposed_user'].public_keys[0].raw) == six.text_type
-    assert plan[0]['proposed_user'].public_keys[0].raw == six.text_type(PUBLIC_KEYS[0]['raw'])
+    assert type(plan[0]['proposed_user'].public_keys[0].raw) == text_type
+    assert plan[0]['proposed_user'].public_keys[0].raw == text_type(PUBLIC_KEYS[0]['raw'])
     execute_plan(plan=plan)
 
     current_users = Users.from_passwd()
@@ -143,7 +143,7 @@ def test_execute_plan_to_update_existing_user():
     assert updated_user[0].gid == 1
     assert updated_user[0].gecos == '\"test user gecos update\"'
     assert updated_user[0].shell == '/bin/false'
-    assert updated_user[0].public_keys[0].raw == six.text_type(PUBLIC_KEYS[1]['raw'])
+    assert updated_user[0].public_keys[0].raw == text_type(PUBLIC_KEYS[1]['raw'])
     delete_test_user_and_group()
 
 
@@ -166,8 +166,8 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
     execute_plan(plan=plan)
     updated_users = Users.from_passwd()
     updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
-    assert updated_user[0].public_keys[0].raw == six.text_type(PUBLIC_KEYS[0]['raw'])
-    assert updated_user[0].public_keys[1].raw == six.text_type(PUBLIC_KEYS[1]['raw'])
+    assert updated_user[0].public_keys[0].raw == text_type(PUBLIC_KEYS[0]['raw'])
+    assert updated_user[0].public_keys[1].raw == text_type(PUBLIC_KEYS[1]['raw'])
     # Replace both keys
     current_users = Users.from_passwd()
     provided_users_3 = [
@@ -178,8 +178,8 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
     execute_plan(plan=plan)
     updated_users = Users.from_passwd()
     updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
-    assert updated_user[0].public_keys[0].raw == six.text_type(PUBLIC_KEYS[2]['raw'])
-    assert updated_user[0].public_keys[1].raw == six.text_type(PUBLIC_KEYS[3]['raw'])
+    assert updated_user[0].public_keys[0].raw == text_type(PUBLIC_KEYS[2]['raw'])
+    assert updated_user[0].public_keys[1].raw == text_type(PUBLIC_KEYS[3]['raw'])
     # Replace one key
     current_users = Users.from_passwd()
     provided_users_4 = [
@@ -190,8 +190,8 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
     execute_plan(plan=plan)
     updated_users = Users.from_passwd()
     updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
-    assert updated_user[0].public_keys[0].raw == six.text_type(PUBLIC_KEYS[1]['raw'])
-    assert updated_user[0].public_keys[1].raw == six.text_type(PUBLIC_KEYS[3]['raw'])
+    assert updated_user[0].public_keys[0].raw == text_type(PUBLIC_KEYS[1]['raw'])
+    assert updated_user[0].public_keys[1].raw == text_type(PUBLIC_KEYS[3]['raw'])
     delete_test_user_and_group()
 
 
