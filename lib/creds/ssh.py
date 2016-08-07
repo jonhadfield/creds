@@ -20,6 +20,9 @@ class PublicKey(object):
 
     @property
     def b64encoded(self):
+        """ Return a base64 encoding of the key
+        :return: str
+        """
         if self._b64encoded:
             return text_type(self._b64encoded).strip("\r\n")
         else:
@@ -27,6 +30,9 @@ class PublicKey(object):
 
     @property
     def raw(self):
+        """ Return unencoded key
+        :return: str
+        """
         if self._raw:
             return text_type(self._raw).strip("\r\n")
         else:
