@@ -6,8 +6,11 @@ import os
 
 import pytest
 
-from creds.cred_user import User
+from creds.cred_users import User
 from creds.cred_users import Users
+from creds.ssh import PublicKey
+from creds.utils import sudo_check
+from tests.sample_data import PUBLIC_KEYS
 from .sample_data import SAMPLE_DICT
 
 
@@ -75,3 +78,57 @@ def test_users_filters():
         input_list=[User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh')])
     assert not users.describe_users(users_filter=dict(name='nobody'))
     assert not users.describe_users(users_filter=dict(uid=1000))
+
+
+def test_user_instance_creation():
+    name = 'Fred'
+    uid = 1024
+    gid = 1024
+    gecos = 'Fred Bloggs'
+    home_dir = '/home/fred'
+    shell = '/bin/false'
+    public_key = PublicKey(raw=PUBLIC_KEYS[0]['raw'])
+    test_user = User(name=name, uid=uid, gid=gid, gecos=gecos, home_dir=home_dir, shell=shell, public_keys=[public_key])
+    assert test_user.name == name
+    assert test_user.uid == uid
+    assert test_user.gid == gid
+    # Ensure gecos is surrounded with double quotes
+    assert test_user.gecos.startswith('\"') and test_user.gecos.endswith('\"')
+    assert test_user.home_dir == home_dir
+    assert test_user.shell == shell
+    assert test_user.public_keys == [public_key]
+
+
+def test_user_instance_creation_precommented_gecos():
+    name = 'Fred'
+    uid = 1024
+    gid = 1024
+    gecos = '\'Fred Bloggs\''
+    home_dir = '/home/fred'
+    shell = '/bin/false'
+    test_user = User(name=name, uid=uid, gid=gid, gecos=gecos, home_dir=home_dir, shell=shell)
+    assert test_user.name == name
+    assert test_user.uid == uid
+    assert test_user.gid == gid
+    # Ensure gecos is surrounded with double quotes
+    assert test_user.gecos.startswith('\"') and test_user.gecos.endswith('\"')
+    assert test_user.home_dir == home_dir
+    assert test_user.shell == shell
+
+
+def test_platform_detection(monkeypatch):
+    monkeypatch.setattr("platform.system", lambda: 'Darwin')
+    with pytest.raises(OSError):
+        name = 'Fred'
+        uid = 1024
+        gid = 1024
+        gecos = 'Fred Bloggs'
+        home_dir = '/home/fred'
+        shell = '/bin/false'
+        public_key = PublicKey(raw=PUBLIC_KEYS[0]['raw'])
+        User(name=name, uid=uid, gid=gid, gecos=gecos, home_dir=home_dir, shell=shell, public_keys=[public_key])
+
+
+def test_user_detection(monkeypatch):
+    monkeypatch.setattr("os.geteuid", lambda: 1)
+    assert sudo_check() == 'sudo'

@@ -5,8 +5,7 @@ from __future__ import (absolute_import, unicode_literals, print_function)
 import shlex
 
 from creds.cred_plan import (create_plan, execute_plan)
-from creds.cred_user import User
-from creds.cred_users import Users
+from creds.cred_users import (Users, User)
 from creds.ssh import PublicKey
 from creds.utils import (execute_command, sudo_check)
 from external.six import six
