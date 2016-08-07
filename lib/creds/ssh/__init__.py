@@ -8,8 +8,14 @@ from creds.ssh.public_key import PublicKey
 from creds.utils import execute_command, random_string, sudo_check
 from external.six.six import text_type
 
+# TODO: Keep temporary copy so we can check for race condition.
 
 def read_authorized_keys(username=None):
+    """ Read public keys from user's authorized_keys file.
+
+        Kwargs:
+            username (str): username.
+    """
     authorized_keys_path = '{0}/.ssh/authorized_keys'.format(os.path.expanduser('~{0}'.format(username)))
     rnd_chars = random_string()
     tmp_authorized_keys_path = '/tmp/authorized_keys_{0}_{1}'.format(username, rnd_chars)
@@ -30,6 +36,11 @@ def read_authorized_keys(username=None):
 
 
 def write_authorized_keys(user=None):
+    """ Write public keys back to authorized_keys file.
+
+        Kwargs:
+            user (User): user instance.
+    """
     authorized_keys = list()
     authorized_keys_dir = '{0}/.ssh'.format(os.path.expanduser('~{0}'.format(user.name)))
     rnd_chars = random_string()

@@ -70,11 +70,12 @@ class User(object):
 
     def __repr__(self):
         return ("User(name=\"{0}\", passwd={1}, uid={2}, gid={3}, "
-                "gecos={4}, home_dir={5}, shell={6}, keys={7})".format(self.name, self.passwd,
-                                                                       self.uid,
-                                                                       self.format_val(self.gid),
-                                                                       self.gecos,
-                                                                       self.format_val(self.home_dir),
-                                                                       self.format_val(self.shell),
-                                                                       self.format_val(self.public_keys
-                                                                                       )))
+                "gecos={4}, home_dir={5}, shell={6}, keys={7})"
+                "".format(self.name, self.passwd,
+                          self.uid,
+                          self.format_val(self.gid),
+                          self.gecos,
+                          self.format_val(self.home_dir),
+                          self.format_val(self.shell),
+                          self.format_val(self.public_keys
+                                          )))
