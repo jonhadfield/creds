@@ -6,8 +6,8 @@ import os
 
 import pytest
 
-from creds.users import (Users, User)
 from creds.ssh import PublicKey
+from creds.users import (Users, User)
 from creds.utils import sudo_check
 from tests.sample_data import PUBLIC_KEYS
 from .sample_data import SAMPLE_DICT
@@ -131,3 +131,5 @@ def test_platform_detection(monkeypatch):
 def test_user_detection(monkeypatch):
     monkeypatch.setattr("os.geteuid", lambda: 1)
     assert sudo_check() == 'sudo'
+    monkeypatch.setattr("os.geteuid", lambda: 0)
+    assert sudo_check() == ''
