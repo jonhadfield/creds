@@ -6,8 +6,7 @@ import os
 
 import pytest
 
-from creds.cred_users import User
-from creds.cred_users import Users
+from creds.users import (Users, User)
 from creds.ssh import PublicKey
 from creds.utils import sudo_check
 from tests.sample_data import PUBLIC_KEYS

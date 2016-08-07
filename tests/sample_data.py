@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import (absolute_import, unicode_literals, print_function)
 
 RAW_PUBLIC_KEY_1 = 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAqEi0oqNZlWqKlXqWHzwA5ydliXi9ips3B1r7NPCPNi293uJGl74JP/FRfNWgcjkw+c1/krBpeYZro44851fmv75uZ2Zc4HXCbJ/ZpRNqcLmyuUvDLN+khhTTFee8ybBcW0UoADGjs4EtKbDRCVLy4sQ8Nud0hpsuPk8j9XYhMkc='
