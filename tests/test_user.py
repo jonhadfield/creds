@@ -3,7 +3,7 @@
 from __future__ import (absolute_import, unicode_literals, print_function)
 
 from creds.cred_user import User
-from creds.ssh.public_key import PublicKey
+from creds.ssh import PublicKey
 from tests.sample_data import PUBLIC_KEYS
 from creds.utils import sudo_check
 import pytest

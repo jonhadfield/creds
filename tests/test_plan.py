@@ -7,7 +7,7 @@ import shlex
 from creds.cred_plan import (create_plan, execute_plan)
 from creds.cred_user import User
 from creds.cred_users import Users
-from creds.ssh.public_key import PublicKey
+from creds.ssh import PublicKey
 from creds.utils import (execute_command, sudo_check)
 from external.six import six
 from .sample_data import PUBLIC_KEYS

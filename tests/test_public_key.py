@@ -3,8 +3,8 @@
 from __future__ import (absolute_import, unicode_literals, print_function)
 
 import pytest
+from creds.ssh import PublicKey
 
-from creds.ssh.public_key import PublicKey
 from .sample_data import PUBLIC_KEYS
 
 
