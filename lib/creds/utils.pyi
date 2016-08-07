@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Tuple
+from typing import Tuple, List
 
 
 def sudo_check() -> str: pass
@@ -9,7 +9,7 @@ def sudo_check() -> str: pass
 def check_platform() -> None: pass
 
 
-def execute_command(command: str) -> Tuple: pass
+def execute_command(command: List) -> Tuple: pass
 
 
 def random_string(length: int) -> str: pass
