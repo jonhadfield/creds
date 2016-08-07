@@ -203,45 +203,45 @@ if os.geteuid() != 0:
     SUDO = '/usr/bin/sudo'
 
 
-def generate_add_user_command(proposed_user=None):
-    command = '{0} {1}'.format(SUDO, USERADD)
-    if proposed_user.uid:
-        command = '{0} -u {1}'.format(command, proposed_user.uid)
-    if proposed_user.gid:
-        command = '{0} -g {1}'.format(command, proposed_user.gid)
-    if proposed_user.gecos:
-        command = '{0} -c \'{1}\''.format(command, proposed_user.gecos)
-    if proposed_user.home_dir:
-        command = '{0} -d {1}'.format(command, proposed_user.home_dir)
-    else:
-        command = '{0} -m'.format(command)
-    if proposed_user.shell:
-        command = '{0} -s {1}'.format(command, proposed_user.shell)
-    command = '{0} {1}'.format(command, proposed_user.name)
-    return shlex.split(str(command))
+# def generate_add_user_command(proposed_user=None):
+#     command = '{0} {1}'.format(SUDO, USERADD)
+#     if proposed_user.uid:
+#         command = '{0} -u {1}'.format(command, proposed_user.uid)
+#     if proposed_user.gid:
+#         command = '{0} -g {1}'.format(command, proposed_user.gid)
+#     if proposed_user.gecos:
+#         command = '{0} -c \'{1}\''.format(command, proposed_user.gecos)
+#     if proposed_user.home_dir:
+#         command = '{0} -d {1}'.format(command, proposed_user.home_dir)
+#     else:
+#         command = '{0} -m'.format(command)
+#     if proposed_user.shell:
+#         command = '{0} -s {1}'.format(command, proposed_user.shell)
+#     command = '{0} {1}'.format(command, proposed_user.name)
+#     return shlex.split(str(command))
 
 
-def generate_modify_user_command(task=None):
-    name = task['proposed_user'].name
-    comparison_result = task['user_comparison']['result']
-    command = '{0} {1}'.format(SUDO, USERMOD)
-    if comparison_result.get('replacement_uid_value'):
-        command = '{0} -u {1}'.format(command, comparison_result.get('replacement_uid_value'))
-    if comparison_result.get('replacement_gid_value'):
-        command = '{0} -g {1}'.format(command, comparison_result.get('replacement_gid_value'))
-    if comparison_result.get('replacement_gecos_value'):
-        command = '{0} -c {1}'.format(command, comparison_result.get('replacement_gecos_value'))
-    if comparison_result.get('replacement_shell_value'):
-        command = '{0} -s {1}'.format(command, comparison_result.get('replacement_shell_value'))
-    if comparison_result.get('replacement_home_dir_value'):
-        command = '{0} -d {1}'.format(command, comparison_result.get('replacement_home_dir_value'))
-    command = '{0} {1}'.format(command, name)
-    return shlex.split(str(command))
+# def generate_modify_user_command(task=None):
+#     name = task['proposed_user'].name
+#     comparison_result = task['user_comparison']['result']
+#     command = '{0} {1}'.format(SUDO, USERMOD)
+#     if comparison_result.get('replacement_uid_value'):
+#         command = '{0} -u {1}'.format(command, comparison_result.get('replacement_uid_value'))
+#     if comparison_result.get('replacement_gid_value'):
+#         command = '{0} -g {1}'.format(command, comparison_result.get('replacement_gid_value'))
+#     if comparison_result.get('replacement_gecos_value'):
+#         command = '{0} -c {1}'.format(command, comparison_result.get('replacement_gecos_value'))
+#     if comparison_result.get('replacement_shell_value'):
+#         command = '{0} -s {1}'.format(command, comparison_result.get('replacement_shell_value'))
+#     if comparison_result.get('replacement_home_dir_value'):
+#         command = '{0} -d {1}'.format(command, comparison_result.get('replacement_home_dir_value'))
+#     command = '{0} {1}'.format(command, name)
+#     return shlex.split(str(command))
 
 
-def generate_delete_user_command(username=None):
-    command = '{0} {1} -r {2}'.format(SUDO, USERDEL, username)
-    return shlex.split(str(command))
+# def generate_delete_user_command(username=None):
+#     command = '{0} {1} -r {2}'.format(SUDO, USERDEL, username)
+#     return shlex.split(str(command))
 
 
 def get_user_by_uid(uid=None, user_list=None):
