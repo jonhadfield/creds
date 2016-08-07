@@ -30,3 +30,8 @@ class User(object):
 
     @staticmethod
     def format_val(val: Any) -> Any: pass
+
+def generate_add_user_command(proposed_user: User) -> List[str]: pass
+
+
+def generate_modify_user_command(task: dict) -> List[str]: pass

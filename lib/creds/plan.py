@@ -3,7 +3,7 @@ from __future__ import (unicode_literals, print_function)
 
 from creds import constants
 from creds.ssh import write_authorized_keys
-from creds.user_utils import (generate_add_user_command, generate_modify_user_command,
+from creds.users import (generate_add_user_command, generate_modify_user_command,
                               generate_delete_user_command, compare_user, get_user_by_uid)
 from creds.utils import execute_command
 from external.six import iteritems
