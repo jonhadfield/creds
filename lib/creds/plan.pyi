@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import List
 
-from creds.cred_users import Users
+from creds.users import Users
 
 
 def create_plan(existing_users: Users, proposed_users: Users, purge_undefined: bool,
