@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+""" Functions to define and discover OS constants. """
 from __future__ import (unicode_literals, print_function)
 
 import os

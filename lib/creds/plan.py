@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+""" Functions to generate a list of steps to transition from the current state to the desired state. """
 from __future__ import (unicode_literals, print_function)
 
 from creds import constants

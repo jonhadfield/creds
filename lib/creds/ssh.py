@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+""" A class to represent a users' keys and functions to manage them."""
 from __future__ import (unicode_literals, print_function)
 
 import os
