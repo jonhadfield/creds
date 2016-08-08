@@ -19,34 +19,18 @@ creds.constants module
     :undoc-members:
     :show-inheritance:
 
-creds.cred_plan module
-----------------------
+creds.plan module
+-----------------
 
-.. automodule:: creds.cred_plan
+.. automodule:: creds.plan
     :members:
     :undoc-members:
     :show-inheritance:
 
-creds.cred_user module
-----------------------
+creds.users module
+------------------
 
-.. automodule:: creds.cred_user
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-creds.cred_users module
------------------------
-
-.. automodule:: creds.cred_users
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-creds.user_utils module
------------------------
-
-.. automodule:: creds.user_utils
+.. automodule:: creds.users
     :members:
     :undoc-members:
     :show-inheritance:

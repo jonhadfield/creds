@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+""" DOC STRING FOR THE MODULE. """
 from __future__ import (unicode_literals, print_function)
 
 import io
@@ -16,7 +17,13 @@ from external.six import text_type
 
 
 class Users(object):
+    """ This is the users class and needs documenting.
+    """
     def __init__(self, input_list=None):
+        """
+        Some words about __init__
+        :param input_list: List
+        """
         check_platform()
         self.user_list = input_list
 
@@ -29,6 +36,7 @@ class Users(object):
         return output
 
     def describe_users(self, users_filter=None):
+        """ Some docstring. """
         user_list = list()
         for user in self.user_list:
             if users_filter:
@@ -41,6 +49,7 @@ class Users(object):
 
     @classmethod
     def from_dict(cls, input_dict=None):
+        """ Some docstring. """
         input_list = list()
         for user_dict in input_dict.get('users'):
             public_keys = None
@@ -58,6 +67,7 @@ class Users(object):
 
     @classmethod
     def from_yaml(cls, file_loc=None):
+        """ Some docstring. """
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             users_yaml = yaml.safe_load(stream)
             if isinstance(users_yaml, dict):
@@ -80,6 +90,7 @@ class Users(object):
 
     @classmethod
     def from_json(cls, file_loc=None):
+        """ Some docstring. """
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             try:
                 users_json = json.load(stream)
@@ -102,6 +113,7 @@ class Users(object):
 
     @classmethod
     def from_passwd(cls, uid_min=None, uid_max=None):
+        """ Some docstring. """
         import pwd
         input_list = list()
         passwd_list = pwd.getpwall()
@@ -204,6 +216,7 @@ if os.geteuid() != 0:
 
 
 def generate_add_user_command(proposed_user=None):
+    """ some docstring. """
     command = '{0} {1}'.format(SUDO, USERADD)
     if proposed_user.uid:
         command = '{0} -u {1}'.format(command, proposed_user.uid)
@@ -222,6 +235,7 @@ def generate_add_user_command(proposed_user=None):
 
 
 def generate_modify_user_command(task=None):
+    """ some docstring. """
     name = task['proposed_user'].name
     comparison_result = task['user_comparison']['result']
     command = '{0} {1}'.format(SUDO, USERMOD)
@@ -240,11 +254,13 @@ def generate_modify_user_command(task=None):
 
 
 def generate_delete_user_command(username=None):
+    """ some docstring. """
     command = '{0} {1} -r {2}'.format(SUDO, USERDEL, username)
     return shlex.split(str(command))
 
 
 def get_user_by_uid(uid=None, user_list=None):
+    """ some docstring. """
     return user_list.describe_users(users_filter=dict(uid=uid))
 
 

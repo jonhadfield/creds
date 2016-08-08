@@ -6,20 +6,38 @@ A python library for user management.
 
 Release v\ |version|.
 
-Contents:
+Installation
+------------
+
+*Using pip package manager*
+
+    $ pip install creds
+
+*From source*
+
+|    $ git clone https://github.com/jonhadfield/creds
+|    $ cd creds
+|    $ python setup.py install
+|
+
+Usage
+-----
+
+*TBC*
+
+|
+|
+|
+|
+|
+
+
+
+API
+---
 
 .. toctree::
    :maxdepth: 3
 
-   installation
-   usage
-   api
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+   api/users
+   api/plan
