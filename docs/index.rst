@@ -9,11 +9,11 @@ Release v\ |version|.
 Installation
 ------------
 
-*Using pip package manager*
+*Using pip package manager*::
 
     $ pip install creds
 
-*From source*
+*From source*::
 
     $ git clone https://github.com/jonhadfield/creds
     $ cd creds
