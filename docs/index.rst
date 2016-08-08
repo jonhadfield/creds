@@ -40,3 +40,5 @@ API
 
    api/users
    api/plan
+   api/ssh
+   api/utils
