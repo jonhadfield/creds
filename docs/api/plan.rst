@@ -4,7 +4,6 @@
 creds.plan
 ==========
 
-
 .. currentmodule:: creds.plan
 .. autosummary::
    create_plan

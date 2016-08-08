@@ -4,10 +4,6 @@
 creds.users
 ===========
 
-.. toctree::
-   :caption: Table of Contents
-   :name: mastertoc
-
 .. currentmodule:: creds.users
 .. automodule:: creds.users
 .. autosummary::

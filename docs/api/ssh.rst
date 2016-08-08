@@ -1,9 +1,8 @@
 .. _ssh:
 
-==========
+=========
 creds.ssh
-==========
-
+=========
 
 .. currentmodule:: creds.ssh
 .. autosummary::
