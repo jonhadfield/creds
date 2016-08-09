@@ -38,8 +38,8 @@ class Users(object):
     def __str__(self):
         return self.__repr__()
 
-    def __getitem__(self, ii):
-        return self._user_list[ii]
+    def __getitem__(self, index):
+        return self._user_list[index]
 
     def __repr__(self):
         user_list = ['{0}'.format(user) for user in self._user_list]

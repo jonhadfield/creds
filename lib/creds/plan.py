@@ -17,12 +17,13 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
     args:
         existing_users (Users): List of discovered users
         proposed_users (Users): List of proposed users
-        purge_undefined (bool): Whether or not to remove discovered users that have not been defined in proposed users list
+        purge_undefined (bool): Remove discovered users that have not been defined in proposed users list
         protected_users (list): List of users' names that should not be evaluated as part of the plan creation process
         allow_non_unique_id (bool): Allow more than one user to have the same uid
 
     returns:
-       list: A list of differences between discovered and proposed users with a list of operations that will achieve the desired state.
+       list: Differences between discovered and proposed users with a
+             list of operations that will achieve the desired state.
 
     """
 
