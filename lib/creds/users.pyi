@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-from typing import List, Dict, Any
+from typing import List, Dict, AnyStr, Optional
 from creds.ssh import PublicKey
 
-
 class Users(object):
-    def __init__(self, input_list: List) -> None:
-        self.user_list = None
+    def __init__(self, input_list: List) -> None: pass
 
     def describe_users(self, users_filter: Dict) -> List: pass
 
@@ -23,20 +21,20 @@ class Users(object):
 
 
 class User(object):
-    def __init__(self, name: str, passwd: str, uid: int, gid: int, gecos: str, home_dir: str, shell: str,
-                 public_keys: List[PublicKey]):
+    def __init__(self, name: AnyStr, passwd: Optional[AnyStr], uid: Optional[int], gid: Optional[int],
+                 gecos: Optional[AnyStr], home_dir: Optional[AnyStr],
+                 shell: Optional[AnyStr], public_keys: Optional[List[PublicKey]]) -> None:
         self.name = name
         self.passwd = passwd
         self.uid = uid
         self.gid = gid
-        self.gecos = gecos
+        self._gecos = gecos
         self.home_dir = home_dir
         self.shell = shell
+        self.public_keys = public_keys
 
     def gecos(self) -> str: pass
 
-    @staticmethod
-    def format_val(val: Any) -> Any: pass
 
 def generate_add_user_command(proposed_user: User) -> List[str]: pass
 

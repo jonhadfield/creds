@@ -14,6 +14,7 @@ from .sample_data import SAMPLE_DICT
 
 
 def test_users_instance_creation():
+    """ Test creation of instances of User and add to Users collection. """
     input_user_list = list()
     input_user_list.append(
         User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'))
@@ -25,11 +26,13 @@ def test_users_instance_creation():
 
 
 def test_get_users_from_passwd():
+    """ Test creation of a Users collection based on users found in the passwd file. """
     users = Users.from_passwd()
     assert isinstance(users, Users)
 
 
 def test_get_users_from_dict():
+    """ Test creation of a Users collection based on a predefined dict. """
     users = Users.from_dict(input_dict=SAMPLE_DICT)
     assert isinstance(users, Users)
     assert isinstance(users[0], User)
@@ -37,6 +40,7 @@ def test_get_users_from_dict():
 
 
 def test_get_users_from_yaml():
+    """ Test creation of a Users collection based on a yaml document. """
     users = Users.from_yaml(file_loc='{0}/yaml_input/basic.yml'.format(os.path.dirname(os.path.abspath(__file__))))
     assert isinstance(users, Users)
     assert isinstance(users[0], User)
@@ -46,6 +50,7 @@ def test_get_users_from_yaml():
 
 
 def test_get_users_from_json():
+    """ Test creation of a Users collection based on a json document. """
     users = Users.from_json(file_loc='{0}/json_input/basic.json'.format(os.path.dirname(os.path.abspath(__file__))))
     assert isinstance(users, Users)
     assert isinstance(users[0], User)
@@ -53,11 +58,13 @@ def test_get_users_from_json():
 
 
 def test_get_users_from_invalid_yaml():
+    """ Test a ValueError is raised if loading a yaml file of users with invalid syntax. """
     with pytest.raises(ValueError):
         Users.from_yaml(file_loc='{0}/yaml_input/invalid.yml'.format(os.path.dirname(os.path.abspath(__file__))))
 
 
 def test_get_users_from_invalid_json():
+    """ Test a ValueError is raised if loading a json file of users with invalid syntax. """
     with pytest.raises(ValueError):
         Users.from_json(file_loc='{0}/json_input/invalid.json'.format(os.path.dirname(os.path.abspath(__file__))))
 

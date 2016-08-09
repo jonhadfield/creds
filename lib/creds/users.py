@@ -142,7 +142,8 @@ class Users(object):
             uid_max = UID_MAX
         for pwd_entry in passwd_list:
             if uid_min <= pwd_entry.pw_uid <= uid_max:
-                user = User(name=text_type(pwd_entry.pw_name), passwd=text_type(pwd_entry.pw_passwd),
+                user = User(name=text_type(pwd_entry.pw_name),
+                            passwd=text_type(pwd_entry.pw_passwd),
                             uid=pwd_entry.pw_uid,
                             gid=pwd_entry.pw_gid,
                             gecos=text_type(pwd_entry.pw_gecos),
@@ -162,9 +163,9 @@ class User(object):
 
         args:
             name (str): user name.
-            passwd (str): password
-            uid (int): user id
-            gid (int): group id
+            passwd (str, optional): password
+            uid (int, optional): user id
+            gid (int, optional): group id
             gecos (str): GECOS field
             home_dir (str): home directory
             shell (str): shell
@@ -278,7 +279,7 @@ def generate_delete_user_command(username=None):
     return shlex.split(str(command))
 
 
-def get_user_by_uid(uid=None, user_list=None):
+def get_user_by_uid(uid=None, users=None):
     """ Return a list of users, from a supplied list, based on their uid.
 
     args:
@@ -288,7 +289,7 @@ def get_user_by_uid(uid=None, user_list=None):
     returns:
         list: a list of users matching the supplied uid
     """
-    return user_list.describe_users(users_filter=dict(uid=uid))
+    return users.describe_users(users_filter=dict(uid=uid))
 
 
 def compare_user(passed_user=None, user_list=None):

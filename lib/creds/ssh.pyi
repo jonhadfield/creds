@@ -12,12 +12,10 @@ class PublicKey(object):
         self._b64encoded = b64encoded
 
     @property
-    def b64encoded(self) -> Optional[AnyStr]:
-        return AnyStr
+    def b64encoded(self) -> Optional[AnyStr]: pass
 
     @property
-    def raw(self) -> Optional[AnyStr]:
-        return AnyStr
+    def raw(self) -> Optional[AnyStr]: pass
 
 
 # TODO: Keep temporary copy so we can check for race condition.

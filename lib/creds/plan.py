@@ -15,8 +15,8 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
     """ Determine what changes are required
 
     args:
-        existing_users (list): List of discovered users
-        proposed_users (list): List of proposed users
+        existing_users (Users): List of discovered users
+        proposed_users (Users): List of proposed users
         purge_undefined (bool): Whether or not to remove discovered users that have not been defined in proposed users list
         protected_users (list): List of users' names that should not be evaluated as part of the plan creation process
         allow_non_unique_id (bool): Allow more than one user to have the same uid
@@ -40,7 +40,7 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
     for proposed_user in proposed_users:
         proposed_usernames.append(proposed_user.name)
         user_matching_name = existing_users.describe_users(users_filter=dict(name=proposed_user.name))
-        user_matching_id = get_user_by_uid(uid=proposed_user.uid, user_list=existing_users)
+        user_matching_id = get_user_by_uid(uid=proposed_user.uid, users=existing_users)
         # If user does not exist
         if not allow_non_unique_id and user_matching_id and not user_matching_name:
             plan.append(
