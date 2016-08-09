@@ -36,7 +36,8 @@ def execute_command(command=None):
 
 def random_string(length=10):
     """ Generate a random string of ASCII characters. """
-    return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(length))
+    return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
+                   for _ in range(length))
 
 
 def base64encode(_input=None):

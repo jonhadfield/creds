@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-""" This module contains the classes for User (a user's details) and Users (a collection of User). """
+""" This module contains the classes for:
+    User (a user's details) and Users (a collection of User). """
 from __future__ import (unicode_literals, print_function)
 
 import io
@@ -73,7 +74,8 @@ class Users(object):
         for user_dict in input_dict.get('users'):
             public_keys = None
             if user_dict.get('public_keys'):
-                public_keys = [PublicKey(b64encoded=x, raw=None) for x in user_dict.get('public_keys')]
+                public_keys = [PublicKey(b64encoded=x, raw=None)
+                               for x in user_dict.get('public_keys')]
             input_list.append(User(name=user_dict.get('name'),
                                    passwd=user_dict.get('passwd'),
                                    uid=user_dict.get('uid'),
@@ -94,7 +96,8 @@ class Users(object):
                 for user_dict in users_yaml.get('users'):
                     public_keys = None
                     if user_dict.get('public_keys'):
-                        public_keys = [PublicKey(b64encoded=x, raw=None) for x in user_dict.get('public_keys')]
+                        public_keys = [PublicKey(b64encoded=x, raw=None)
+                                       for x in user_dict.get('public_keys')]
                     input_list.append(User(name=user_dict.get('name'),
                                            passwd=user_dict.get('passwd'),
                                            uid=user_dict.get('uid'),
@@ -119,7 +122,8 @@ class Users(object):
             for user_dict in users_json.get('users'):
                 public_keys = None
                 if user_dict.get('public_keys'):
-                    public_keys = [PublicKey(b64encoded=x, raw=None) for x in user_dict.get('public_keys')]
+                    public_keys = [PublicKey(b64encoded=x, raw=None)
+                                   for x in user_dict.get('public_keys')]
                 input_list.append(User(name=user_dict.get('name'),
                                        passwd=user_dict.get('passwd'),
                                        uid=user_dict.get('uid'),
@@ -293,7 +297,8 @@ def get_user_by_uid(uid=None, users=None):
 
 
 def compare_user(passed_user=None, user_list=None):
-    """ Check if supplied User instance exists in supplied Users list and, if so, return the differences.
+    """ Check if supplied User instance exists in supplied Users list and,
+        if so, return the differences.
 
     args:
         passed_user (User): the user instance to check for differences
