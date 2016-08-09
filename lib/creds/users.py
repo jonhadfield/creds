@@ -17,13 +17,13 @@ from external.six import text_type
 
 
 class Users(object):
-    """ This is the users class and needs documenting.
-    """
+    """ A collection of users and methods to manage them. """
 
     def __init__(self, input_list=None):
-        """
-        Some words about __init__
-        :param input_list: List
+        """ Populate a list of users.
+
+        args:
+            input_list (list): A list of User instances.
         """
         check_platform()
         self.user_list = input_list
