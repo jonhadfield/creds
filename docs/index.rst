@@ -19,32 +19,6 @@ Installation
     $ cd creds
     $ python setup.py install
 
-Example usage - adding a user
------------------------------
-
-*Import classes and functions*::
-
-    from creds.users import User, Users
-    from creds.plan import (create_plan, execute_plan)
-
-*Discover existing users*::
-
-    current_users = Users.from_passwd()
-
-*Create a new user*::
-    test_user = User(name='test')
-
-
-
-
-|
-|
-|
-|
-|
-
-
-
 API
 ---
 
