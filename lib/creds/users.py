@@ -165,7 +165,7 @@ class User(object):
     def gecos(self):
         """ Force double quoted gecos.
 
-        Returns:
+        returns:
             str: The double quoted gecos.
         """
         if self._gecos.startswith(text_type('\'')) and self._gecos.endswith(text_type('\'')):
@@ -184,8 +184,11 @@ class User(object):
     def format_val(val=None):
         """ Double quote string, otherwise return as is.
 
-        Kwargs:
+        args:
             val: something bad
+
+        returns:
+            str: something badder
         """
         if val:
             if isinstance(val, text_type):
