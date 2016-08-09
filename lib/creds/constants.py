@@ -36,6 +36,7 @@ def login_defs():
         uid_min = DEFAULT_UID_MIN
     if not uid_max:
         uid_max = DEFAULT_UID_MAX
+    print(uid_min, uid_max)
     return uid_min, uid_max
 
 

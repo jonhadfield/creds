@@ -24,8 +24,8 @@ Example usage
 
 *Import*::
 
-    from creds.cred_users import Users
-    from creds.cred_plan import (create_plan, execute_plan)
+    from creds.users import Users
+    from creds.plan import (create_plan, execute_plan)
 
 *Discover existing users*::
 
