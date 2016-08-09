@@ -28,15 +28,14 @@ def login_defs():
                 line = str(line)
             if PY2:
                 line = line.encode(text_type('utf8'))
-            if line[:6] == text_type('UID_MIN'):
+            if line[:7] == text_type('UID_MIN'):
                 uid_min = int(line.split()[1].strip())
-            if line[:6] == text_type('UID_MAX'):
+            if line[:7] == text_type('UID_MAX'):
                 uid_max = int(line.split()[1].strip())
     if not uid_min:
         uid_min = DEFAULT_UID_MIN
     if not uid_max:
         uid_max = DEFAULT_UID_MAX
-    print(uid_min, uid_max)
     return uid_min, uid_max
 
 
