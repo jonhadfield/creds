@@ -28,8 +28,8 @@ class PublicKey(object):
     def b64encoded(self):
         """ Return a base64 encoding of the key
 
-        returns: str
-
+        returns:
+            str: base64 encoding of the public key
         """
         if self._b64encoded:
             return text_type(self._b64encoded).strip("\r\n")
@@ -40,7 +40,8 @@ class PublicKey(object):
     def raw(self):
         """ Return raw key.
 
-        returns: str
+        returns:
+            str: raw key
         """
         if self._raw:
             return text_type(self._raw).strip("\r\n")
@@ -57,7 +58,7 @@ class PublicKey(object):
 # TODO: Keep temporary copy so we can check for race condition.
 
 def read_authorized_keys(username=None):
-    """ Read public keys from user's authorized_keys file.
+    """ Read public keys from specified user's authorized_keys file.
 
         args:
             username (str): username.

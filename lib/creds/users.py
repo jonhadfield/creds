@@ -211,6 +211,9 @@ def generate_add_user_command(proposed_user=None):
 
     args:
         proposed_user (User): User
+
+    returns:
+        list: The command string split into shell-like syntax
     """
     command = '{0} {1}'.format(SUDO, USERADD)
     if proposed_user.uid:
@@ -230,7 +233,14 @@ def generate_add_user_command(proposed_user=None):
 
 
 def generate_modify_user_command(task=None):
-    """ some docstring. """
+    """ Generate command to modify existing user to become the proposed user.
+
+    args:
+        task (dict): A proposed user and the differences between it and the existing user
+
+    returns:
+        list: The command string split into shell-like syntax
+    """
     name = task['proposed_user'].name
     comparison_result = task['user_comparison']['result']
     command = '{0} {1}'.format(SUDO, USERMOD)
@@ -249,18 +259,41 @@ def generate_modify_user_command(task=None):
 
 
 def generate_delete_user_command(username=None):
-    """ some docstring. """
+    """ Generate command to delete a user.
+
+    args:
+        username (str): user name
+
+    returns:
+        list: The user delete command string split into shell-like syntax
+    """
     command = '{0} {1} -r {2}'.format(SUDO, USERDEL, username)
     return shlex.split(str(command))
 
 
 def get_user_by_uid(uid=None, user_list=None):
-    """ some docstring. """
+    """ Return a list of users, from a supplied list, based on their uid.
+
+    args:
+        uid (id): A user id
+        user_list (list): An instance of Users
+
+    returns:
+        list: The user delete command string split into shell-like syntax
+    """
     return user_list.describe_users(users_filter=dict(uid=uid))
 
 
 def compare_user(passed_user=None, user_list=None):
-    """ Check user against existing list """
+    """ Check if supplied User instance exists in supplied Users list and, if so, return the differences.
+
+    args:
+        passed_user (User): the user instance to check for differences
+        user_list (Users): the Users instance containing a list of Users instances
+
+    returns:
+        dict: Details of the matching user and a list of differences
+    """
     # Check if user exists
     returned = user_list.describe_users(users_filter=dict(name=passed_user.name))
     replace_keys = False
