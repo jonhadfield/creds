@@ -26,7 +26,6 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
 
     """
 
-
     plan = list()
     proposed_usernames = list()
 
