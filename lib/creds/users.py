@@ -177,6 +177,8 @@ class User(object):
         returns:
             str: The double quoted gecos.
         """
+        if not self._gecos:
+            return None
         if self._gecos.startswith(text_type('\'')) and self._gecos.endswith(text_type('\'')):
             self._gecos = '\"{0}\"'.format(self._gecos[1:-1])
             return self._gecos
