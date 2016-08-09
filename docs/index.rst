@@ -19,10 +19,18 @@ Installation
     $ cd creds
     $ python setup.py install
 
-Usage
------
+Example usage
+-------------
 
-*TBC*
+*Import*::
+
+    from creds.cred_users import Users
+    from creds.cred_plan import (create_plan, execute_plan)
+
+*Discover existing users*::
+
+    current_users = Users.from_passwd()
+
 
 |
 |
