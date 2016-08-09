@@ -286,7 +286,7 @@ def get_user_by_uid(uid=None, user_list=None):
         user_list (list): An instance of Users
 
     returns:
-        list: The user delete command string split into shell-like syntax
+        list: a list of users matching the supplied uid
     """
     return user_list.describe_users(users_filter=dict(uid=uid))
 
