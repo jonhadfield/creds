@@ -65,7 +65,7 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
 
 
 def execute_plan(plan=None):
-    """ Create, Modify or Delete, depending on plan item"""
+    """ Create, Modify or Delete, depending on plan item. """
     execution_result = list()
     for task in plan:
         action = task['action']

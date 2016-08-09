@@ -153,7 +153,7 @@ class User(object):
                  home_dir=None, shell=None, public_keys=None):
         """ Make a user.
 
-        Kwargs:
+        args:
             name (str): user name.
             passwd (str): password
             uid (int): user id

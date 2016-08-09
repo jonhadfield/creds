@@ -13,7 +13,12 @@ from external.six import text_type
 class PublicKey(object):
     """ Representation of a public key. """
     def __init__(self, raw=None, b64encoded=None):
+        """ Make a public key.
 
+        args:
+            raw (str): raw public key
+            b64encoded (str): base64 encoded public key
+        """
         if not any((raw, b64encoded)):
             raise AttributeError('Key not provided')
         self._raw = raw
@@ -22,7 +27,9 @@ class PublicKey(object):
     @property
     def b64encoded(self):
         """ Return a base64 encoding of the key
-        :return: str
+
+        returns: str
+
         """
         if self._b64encoded:
             return text_type(self._b64encoded).strip("\r\n")
@@ -31,8 +38,9 @@ class PublicKey(object):
 
     @property
     def raw(self):
-        """ Return unencoded key
-        :return: str
+        """ Return raw key.
+
+        returns: str
         """
         if self._raw:
             return text_type(self._raw).strip("\r\n")
