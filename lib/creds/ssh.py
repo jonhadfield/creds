@@ -60,7 +60,7 @@ def read_authorized_keys(username=None):
     authorized_keys_path = '{0}/.ssh/authorized_keys'.format(os.path.expanduser('~{0}'.format(username)))
     rnd_chars = random_string()
     tmp_authorized_keys_path = '/tmp/authorized_keys_{0}_{1}'.format(username, rnd_chars)
-
+    authorized_keys = list()
     copy_result = execute_command(
         shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), authorized_keys_path, tmp_authorized_keys_path))))
     result_message = copy_result[1].decode('UTF-8')
@@ -68,12 +68,11 @@ def read_authorized_keys(username=None):
         raise OSError("/etc/sudoers is blocked sudo. Remove entry: 'Defaults    requiretty'.")
     elif 'No such file or directory' not in result_message:
         execute_command(shlex.split(str('{0} chmod 755 {1}'.format(sudo_check(), tmp_authorized_keys_path))))
-        authorized_keys = list()
         with open(tmp_authorized_keys_path) as keys_file:
             for key in keys_file:
                 authorized_keys.append(PublicKey(raw=key))
         execute_command(shlex.split(str('{0} rm {1}'.format(sudo_check(), tmp_authorized_keys_path))))
-        return authorized_keys
+    return authorized_keys
 
 
 def write_authorized_keys(user=None):

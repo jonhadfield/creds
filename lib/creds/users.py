@@ -19,6 +19,7 @@ from external.six import text_type
 class Users(object):
     """ This is the users class and needs documenting.
     """
+
     def __init__(self, input_list=None):
         """
         Some words about __init__
@@ -34,6 +35,14 @@ class Users(object):
         user_list = ['{0}'.format(user) for user in self.user_list]
         output = '\n'.join(user_list)
         return output
+
+    def add(self, users=None):
+        """ Some docstring. """
+        self.user_list.extend(users)
+
+    def remove(self, username=None):
+        """ Some docstring. """
+        self.user_list = [user for user in self.user_list if user.name != username]
 
     def describe_users(self, users_filter=None):
         """ Some docstring. """
