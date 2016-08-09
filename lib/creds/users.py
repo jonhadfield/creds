@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" DOC STRING FOR THE MODULE. """
+""" This module contains the classes for User (a user's details) and Users (a collection of User). """
 from __future__ import (unicode_literals, print_function)
 
 import io

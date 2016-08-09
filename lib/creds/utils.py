@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Some docstring. """
+""" This module contains common helper functions. """
 
 from __future__ import (unicode_literals, print_function)
 

@@ -2,7 +2,7 @@
 creds
 =====
 
-A python library for user management.
+A python library for managing users on linux.
 
 Release v\ |version|.
 
