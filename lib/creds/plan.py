@@ -37,7 +37,7 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
         allow_non_unique_id = constants.ALLOW_NON_UNIQUE_ID
 
     # Create list of modifications to make based on proposed users compared to existing users
-    for proposed_user in proposed_users.user_list:
+    for proposed_user in proposed_users:
         proposed_usernames.append(proposed_user.name)
         user_matching_name = existing_users.describe_users(users_filter=dict(name=proposed_user.name))
         user_matching_id = get_user_by_uid(uid=proposed_user.uid, user_list=existing_users)
@@ -57,7 +57,7 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
     # Application of the proposed user list will not result in deletion of users that need to be removed
     # If 'PURGE_UNDEFINED' then look for existing users that are not defined in proposed usernames and mark for removal
     if purge_undefined:
-        for existing_user in existing_users.user_list:
+        for existing_user in existing_users:
             if existing_user.name not in proposed_usernames:
                 if existing_user.name not in protected_users:
                     plan.append(dict(action='delete', username=existing_user.name, state='existing'))

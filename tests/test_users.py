@@ -26,34 +26,30 @@ def test_users_instance_creation():
 
 def test_get_users_from_passwd():
     users = Users.from_passwd()
-    assert isinstance(users.user_list, list)
+    assert isinstance(users, Users)
 
 
 def test_get_users_from_dict():
     users = Users.from_dict(input_dict=SAMPLE_DICT)
-    assert isinstance(users.user_list, list)
-    assert isinstance(users.user_list, list)
-    assert isinstance(users.user_list, list)
-    assert isinstance(users.user_list[0], User)
-    assert isinstance(users.user_list[0].uid, int)
+    assert isinstance(users, Users)
+    assert isinstance(users[0], User)
+    assert isinstance(users[0].uid, int)
 
 
 def test_get_users_from_yaml():
     users = Users.from_yaml(file_loc='{0}/yaml_input/basic.yml'.format(os.path.dirname(os.path.abspath(__file__))))
-    assert isinstance(users.user_list, list)
-    assert isinstance(users.user_list, list)
-    assert isinstance(users.user_list[0], User)
-    assert isinstance(users.user_list[0].uid, int)
-    assert users.user_list[0].name == 'peter'
-    assert users.user_list[0].home_dir == '/home/bigal'
+    assert isinstance(users, Users)
+    assert isinstance(users[0], User)
+    assert isinstance(users[0].uid, int)
+    assert users[0].name == 'peter'
+    assert users[0].home_dir == '/home/bigal'
 
 
 def test_get_users_from_json():
     users = Users.from_json(file_loc='{0}/json_input/basic.json'.format(os.path.dirname(os.path.abspath(__file__))))
-    assert isinstance(users.user_list, list)
-    assert isinstance(users.user_list, list)
-    assert isinstance(users.user_list[0], User)
-    assert isinstance(users.user_list[0].uid, int)
+    assert isinstance(users, Users)
+    assert isinstance(users[0], User)
+    assert isinstance(users[0].uid, int)
 
 
 def test_get_users_from_invalid_yaml():
@@ -125,6 +121,7 @@ def test_user_instance_creation_precommented_gecos():
     assert test_user.gecos.startswith('\"') and test_user.gecos.endswith('\"')
     assert test_user.home_dir == home_dir
     assert test_user.shell == shell
+
 
 def test_user_instance_with_missing_gecos():
     rod = User(name='rod', uid=1001, gid=1001, home_dir='/home/rod', shell='/bin/sh')

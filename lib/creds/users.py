@@ -26,31 +26,38 @@ class Users(object):
             input_list (list): A list of User instances.
         """
         check_platform()
-        self.user_list = input_list
+        self._user_list = input_list
+
+    def __iter__(self):
+        for user in self._user_list:
+            yield user
 
     def __len__(self):
-        return len(self.user_list)
+        return len(self._user_list)
 
     def __str__(self):
         return self.__repr__()
 
+    def __getitem__(self, ii):
+        return self._user_list[ii]
+
     def __repr__(self):
-        user_list = ['{0}'.format(user) for user in self.user_list]
+        user_list = ['{0}'.format(user) for user in self._user_list]
         output = '\n'.join(user_list)
         return output
 
     def add(self, users=None):
         """ Some docstring. """
-        self.user_list.extend(users)
+        self._user_list.extend(users)
 
     def remove(self, username=None):
         """ Some docstring. """
-        self.user_list = [user for user in self.user_list if user.name != username]
+        self._user_list = [user for user in self._user_list if user.name != username]
 
     def describe_users(self, users_filter=None):
         """ Some docstring. """
         user_list = list()
-        for user in self.user_list:
+        for user in self._user_list:
             if users_filter:
                 if users_filter.get('name') == user.name or users_filter.get('uid') == user.uid:
                     public_keys = read_authorized_keys(username=user.name)
