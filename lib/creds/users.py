@@ -28,6 +28,9 @@ class Users(object):
         check_platform()
         self.user_list = input_list
 
+    def __len__(self):
+        return len(self.user_list)
+
     def __str__(self):
         return self.__repr__()
 
@@ -63,7 +66,7 @@ class Users(object):
         for user_dict in input_dict.get('users'):
             public_keys = None
             if user_dict.get('public_keys'):
-                public_keys = [PublicKey(b64encoded=x) for x in user_dict.get('public_keys')]
+                public_keys = [PublicKey(b64encoded=x, raw=None) for x in user_dict.get('public_keys')]
             input_list.append(User(name=user_dict.get('name'),
                                    passwd=user_dict.get('passwd'),
                                    uid=user_dict.get('uid'),
@@ -84,7 +87,7 @@ class Users(object):
                 for user_dict in users_yaml.get('users'):
                     public_keys = None
                     if user_dict.get('public_keys'):
-                        public_keys = [PublicKey(b64encoded=x) for x in user_dict.get('public_keys')]
+                        public_keys = [PublicKey(b64encoded=x, raw=None) for x in user_dict.get('public_keys')]
                     input_list.append(User(name=user_dict.get('name'),
                                            passwd=user_dict.get('passwd'),
                                            uid=user_dict.get('uid'),
@@ -109,7 +112,7 @@ class Users(object):
             for user_dict in users_json.get('users'):
                 public_keys = None
                 if user_dict.get('public_keys'):
-                    public_keys = [PublicKey(b64encoded=x) for x in user_dict.get('public_keys')]
+                    public_keys = [PublicKey(b64encoded=x, raw=None) for x in user_dict.get('public_keys')]
                 input_list.append(User(name=user_dict.get('name'),
                                        passwd=user_dict.get('passwd'),
                                        uid=user_dict.get('uid'),
@@ -190,34 +193,8 @@ class User(object):
     def __str__(self):
         return self.__repr__()
 
-    # TODO: Fix - it's nasty
-    @staticmethod
-    def format_val(val=None):
-        """ Double quote string, otherwise return as is.
-
-        args:
-            val: something bad
-
-        returns:
-            str: something badder
-        """
-        if val:
-            if isinstance(val, text_type):
-                return "\"{0}\"".format(val)
-            else:
-                return val
-
     def __repr__(self):
-        return ("User(name=\"{0}\", passwd={1}, uid={2}, gid={3}, "
-                "gecos={4}, home_dir={5}, shell={6}, keys={7})"
-                "".format(self.name, self.passwd,
-                          self.uid,
-                          self.format_val(self.gid),
-                          self.gecos,
-                          self.format_val(self.home_dir),
-                          self.format_val(self.shell),
-                          self.format_val(self.public_keys
-                                          )))
+        return '<User {0}>'.format(self.name)
 
 
 # TODO: Detect based on OS
@@ -230,7 +207,11 @@ if os.geteuid() != 0:
 
 
 def generate_add_user_command(proposed_user=None):
-    """ some docstring. """
+    """ Generate command to add a user.
+
+    args:
+        proposed_user (User): User
+    """
     command = '{0} {1}'.format(SUDO, USERADD)
     if proposed_user.uid:
         command = '{0} -u {1}'.format(command, proposed_user.uid)

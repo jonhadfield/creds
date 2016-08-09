@@ -65,7 +65,6 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
     return plan
 
 
-# TODO: Add 'interactive' option
 def execute_plan(plan=None):
     """ Create, Modify or Delete, depending on plan item"""
     execution_result = list()

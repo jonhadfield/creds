@@ -24,7 +24,14 @@ class Users(object):
 
 class User(object):
     def __init__(self, name: str, passwd: str, uid: int, gid: int, gecos: str, home_dir: str, shell: str,
-                 public_keys: List[PublicKey]): pass
+                 public_keys: List[PublicKey]):
+        self.name = name
+        self.passwd = passwd
+        self.uid = uid
+        self.gid = gid
+        self.gecos = gecos
+        self.home_dir = home_dir
+        self.shell = shell
 
     def gecos(self) -> str: pass
 

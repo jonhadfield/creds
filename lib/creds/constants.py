@@ -24,10 +24,10 @@ def login_defs():
         with io.open(text_type(login_defs_path), encoding=text_type('utf-8')) as log_defs_file:
             login_data = log_defs_file.readlines()
         for line in login_data:
-            if PY3:
-                line = str(line)
-            if PY2:
-                line = line.encode(text_type('utf8'))
+            # if PY3:
+            #     line = str(line)
+            # if PY2:
+            #     line = line.encode(text_type('utf8'))
             if line[:7] == text_type('UID_MIN'):
                 uid_min = int(line.split()[1].strip())
             if line[:7] == text_type('UID_MAX'):

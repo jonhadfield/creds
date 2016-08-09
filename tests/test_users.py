@@ -72,6 +72,18 @@ def test_users_repr():
     assert str(users) == users.__repr__()
 
 
+def test_users_add_and_remove():
+    rod = User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh')
+    users = Users(
+        input_list=[rod])
+    assert len(users) == 1
+    jane = User(name='jane')
+    users.add([jane])
+    assert len(users) == 2
+    users.remove(username='jane')
+    assert len(users) == 1
+
+
 def test_users_filters():
     users = Users(
         input_list=[User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh')])
@@ -113,6 +125,10 @@ def test_user_instance_creation_precommented_gecos():
     assert test_user.gecos.startswith('\"') and test_user.gecos.endswith('\"')
     assert test_user.home_dir == home_dir
     assert test_user.shell == shell
+
+def test_user_instance_with_missing_gecos():
+    rod = User(name='rod', uid=1001, gid=1001, home_dir='/home/rod', shell='/bin/sh')
+    assert rod.gecos == None
 
 
 def test_platform_detection(monkeypatch):

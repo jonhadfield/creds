@@ -58,7 +58,7 @@ def test_create_and_execute_plan_to_create_new_user():
 
     current_users = Users.from_passwd()
     plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
-                       protected_users=['travis', 'couchdb', 'ubuntu'])
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj'])
     assert not plan
     delete_test_user_and_group()
 
