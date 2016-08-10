@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" This module contains common helper functions. """
+"""This module contains common helper functions."""
 
 from __future__ import (unicode_literals, print_function)
 
@@ -15,7 +15,7 @@ from external.six import (PY2, PY3)
 
 
 def sudo_check():
-    """ Return the string 'sudo' if current user isn't root. """
+    """Return the string 'sudo' if current user isn't root."""
     if os.geteuid() != 0:
         return 'sudo'
     else:
@@ -23,25 +23,25 @@ def sudo_check():
 
 
 def check_platform():
-    """ Return an error if this is being used on unsupported platform. """
+    """Return an error if this is being used on unsupported platform."""
     if not platform.system() in SUPPORTED_PLATFORMS:
         raise OSError('Linux is currently the only supported platform for this library.')
 
 
 def execute_command(command=None):
-    """ Execute a command and return the stdout and stderr. """
+    """Execute a command and return the stdout and stderr."""
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return process.communicate()
 
 
 def random_string(length=10):
-    """ Generate a random string of ASCII characters. """
+    """Generate a random string of ASCII characters."""
     return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                    for _ in range(length))
 
 
 def base64encode(_input=None):
-    """ Return base64 encoded representation of a string. """
+    """Return base64 encoded representation of a string."""
     if PY2:  # pragma: no cover
         return base64.b64encode(_input)
     elif PY3:  # pragma: no cover
@@ -52,7 +52,7 @@ def base64encode(_input=None):
 
 
 def base64decode(_input=None):
-    """ Take a base64 encoded string and return the decoded string. """
+    """Take a base64 encoded string and return the decoded string."""
     missing_padding = 4 - len(_input) % 4
     if missing_padding:
         _input += '=' * missing_padding

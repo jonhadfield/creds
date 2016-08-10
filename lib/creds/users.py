@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" This module contains the classes for User (a user's details) and Users (a collection of User). """
+"""This module contains the classes for User (a user's details) and Users (a collection of User)."""
 from __future__ import (unicode_literals, print_function)
 
 import io
@@ -22,7 +22,7 @@ class User(object):
 
     def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None,
                  home_dir=None, shell=None, public_keys=None):
-        """ Make a user.
+        """Make a user.
 
         args:
             name (str): user name.
@@ -69,9 +69,9 @@ class User(object):
 
 class Users(MutableSequence):
 
-    """A collection of users and methods to manage them. """
+    """A collection of users and methods to manage them."""
     def __init__(self, user_list=None, oktypes=User):
-        """ Create instance of Users collection.
+        """Create instance of Users collection.
 
         args:
             oktypes (object): The acceptable types of instances..
@@ -81,7 +81,7 @@ class Users(MutableSequence):
         self._user_list = user_list if user_list else list()
 
     def check(self, value):
-        """ Check types. """
+        """Check types."""
         if not isinstance(value, self.oktypes):
             raise TypeError
 
@@ -99,7 +99,7 @@ class Users(MutableSequence):
         return self._user_list[index]
 
     def insert(self, index, value):
-        """Insert an instance of User into the collection. """
+        """Insert an instance of User into the collection."""
         self.check(value)
         self._user_list.insert(index, value)
 
