@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-""" This module contains the classes for:
-    User (a user's details) and Users (a collection of User). """
+""" This module contains the classes for User (a user's details) and Users (a collection of User). """
 from __future__ import (unicode_literals, print_function)
 
 import io
@@ -117,7 +116,7 @@ class Users(MutableSequence):
         del self._user_list[index]
 
     def remove(self, username=None):
-        """ Some docstring. """
+        """ Remove User instance based on their user name. """
         self._user_list = [user for user in self._user_list if user.name != username]
 
     def describe_users(self, users_filter=None):
@@ -134,13 +133,13 @@ class Users(MutableSequence):
 
     @classmethod
     def from_dict(cls, input_dict=None):
-        """ Some docstring. """
+        """ Create collection from dictionary content. """
         result = Users._construct_user_list(raw_users=input_dict.get('users'))
         return cls(input_list=result)
 
     @classmethod
     def from_yaml(cls, file_loc=None):
-        """ Some docstring. """
+        """ Create collection from a YAML file. """
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             users_yaml = yaml.safe_load(stream)
             if isinstance(users_yaml, dict):
@@ -151,7 +150,7 @@ class Users(MutableSequence):
 
     @classmethod
     def from_json(cls, file_loc=None):
-        """ Some docstring. """
+        """ Create collection from a JSON file. """
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             try:
                 users_json = json.load(stream)
@@ -162,7 +161,7 @@ class Users(MutableSequence):
 
     @classmethod
     def from_passwd(cls, uid_min=None, uid_max=None):
-        """ Some docstring. """
+        """ Create collection from locally discovered data, e.g. /etc/passwd. """
         import pwd
         input_list = list()
         passwd_list = pwd.getpwall()
@@ -185,6 +184,7 @@ class Users(MutableSequence):
 
     @staticmethod
     def _construct_user_list(raw_users=None):
+        """ Construct a list of User objects from a list of dicts. """
         input_list = list()
         for user_dict in raw_users:
             public_keys = None
