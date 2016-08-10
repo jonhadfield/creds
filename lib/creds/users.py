@@ -120,7 +120,7 @@ class Users(MutableSequence):
         self._user_list = [user for user in self._user_list if user.name != username]
 
     def describe_users(self, users_filter=None):
-        """ Some docstring. """
+        """Return a list of users matching a filter (if provided)."""
         user_list = list()
         for user in self._user_list:
             if users_filter:
