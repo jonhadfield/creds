@@ -73,7 +73,7 @@ class Users(MutableSequence):
 
     """A collection of users and methods to manage them."""
 
-    def __init__(self, user_list=None, oktypes=User):
+    def __init__(self, oktypes=User):
         """Create instance of Users collection.
 
         args:
@@ -81,7 +81,7 @@ class Users(MutableSequence):
         """
         check_platform()
         self.oktypes = oktypes
-        self._user_list = user_list if user_list else list()
+        self._user_list = list()
 
     def check(self, value):
         """Check types."""
@@ -134,25 +134,25 @@ class Users(MutableSequence):
                     user_list.append(user)
         return user_list
 
-    @classmethod
-    def from_dict(cls, input_dict=None):
+    @staticmethod
+    def from_dict(input_dict=None):
         """Create collection from dictionary content."""
         result = Users._construct_user_list(raw_users=input_dict.get('users'))
-        return cls(user_list=result)
+        return result
 
-    @classmethod
-    def from_yaml(cls, file_loc=None):
+    @staticmethod
+    def from_yaml(file_loc=None):
         """Create collection from a YAML file."""
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             users_yaml = yaml.safe_load(stream)
             if isinstance(users_yaml, dict):
                 result = Users._construct_user_list(raw_users=users_yaml.get('users'))
-                return cls(user_list=result)
+                return result
             else:
                 raise ValueError('No YAML object could be decoded')
 
-    @classmethod
-    def from_json(cls, file_loc=None):
+    @staticmethod
+    def from_json(file_loc=None):
         """Create collection from a JSON file."""
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             try:
@@ -160,13 +160,13 @@ class Users(MutableSequence):
             except ValueError:
                 raise
             result = Users._construct_user_list(raw_users=users_json.get('users'))
-            return cls(user_list=result)
+            return result
 
-    @classmethod
-    def from_passwd(cls, uid_min=None, uid_max=None):
+    @staticmethod
+    def from_passwd(uid_min=None, uid_max=None):
         """Create collection from locally discovered data, e.g. /etc/passwd."""
         import pwd
-        input_list = list()
+        input_list = Users()
         passwd_list = pwd.getpwall()
         if not uid_min:
             uid_min = UID_MIN
@@ -183,12 +183,12 @@ class Users(MutableSequence):
                             shell=text_type(pwd_entry.pw_shell),
                             public_keys=read_authorized_keys(username=pwd_entry.pw_name))
                 input_list.append(user)
-        return cls(user_list=input_list)
+        return input_list
 
     @staticmethod
     def _construct_user_list(raw_users=None):
         """Construct a list of User objects from a list of dicts."""
-        input_list = list()
+        input_list = Users()
         for user_dict in raw_users:
             public_keys = None
             if user_dict.get('public_keys'):

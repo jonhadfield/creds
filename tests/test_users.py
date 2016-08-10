@@ -15,33 +15,33 @@ from .sample_data import SAMPLE_DICT
 
 def test_users_instance_creation():
     """ Test creation of instances of User and add to Users collection. """
-    input_user_list = list()
+    input_user_list = Users()
     input_user_list.append(
         User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'))
     input_user_list.append(
         User(name='jane', uid=1002, gid=1002, gecos='jane comment', home_dir='/home/jane', shell='/bin/bash'))
     input_user_list.append(
         User(name='freddy', uid=1003, gid=1003, gecos='freddy comment', home_dir='/home/freddy', shell='/bin/false'))
-    assert Users(user_list=input_user_list)
+    assert len(input_user_list) == 3
 
 
 def test_users_del_method():
-    users = Users(
-        user_list=[
-            User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'),
-            User(name='jane', uid=1002, gid=1002, gecos='jane comment', home_dir='/home/jane', shell='/bin/sh')
-        ])
+    users = Users()
+    users.append(
+        User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'))
+    users.append(
+        User(name='jane', uid=1002, gid=1002, gecos='jane comment', home_dir='/home/jane', shell='/bin/sh'))
     assert len(users) == 2
     del users[0]
     assert len(users) == 1
 
 
 def test_users_insert_method():
-    users = Users(
-        user_list=[
-            User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'),
-            User(name='jane', uid=1002, gid=1002, gecos='jane comment', home_dir='/home/jane', shell='/bin/sh')
-        ])
+    users = Users()
+    users.append(
+        User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'))
+    users.append(
+        User(name='jane', uid=1002, gid=1002, gecos='jane comment', home_dir='/home/jane', shell='/bin/sh'))
     users.insert(0, User(name='freddy', uid=1003, gid=1003, gecos='freddy comment',
                          home_dir='/home/freddy', shell='/bin/false'))
     assert len(users) == 3
@@ -95,15 +95,15 @@ def test_get_users_from_invalid_json():
 
 
 def test_users_repr():
-    users = Users(
-        user_list=[User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh')])
+    users = Users()
+    users.append(User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'))
     assert str(users) == users.__repr__()
 
 
 def test_users_add_and_remove():
     rod = User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh')
-    users = Users(
-        user_list=[rod])
+    users = Users()
+    users.append(rod)
     assert len(users) == 1
     jane = User(name='jane')
     users.append(jane)
@@ -113,8 +113,8 @@ def test_users_add_and_remove():
 
 
 def test_users_filters():
-    users = Users(
-        user_list=[User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh')])
+    users = Users()
+    users.append(User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'))
     assert not users.describe_users(users_filter=dict(name='nobody'))
     assert not users.describe_users(users_filter=dict(uid=1000))
 
