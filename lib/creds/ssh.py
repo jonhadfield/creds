@@ -13,6 +13,7 @@ from external.six import text_type
 class PublicKey(object):
 
     """Representation of a public key."""
+
     def __init__(self, raw=None, b64encoded=None):
         """Make a public key.
 
@@ -61,11 +62,11 @@ class PublicKey(object):
 def read_authorized_keys(username=None):
     """Read public keys from specified user's authorized_keys file.
 
-        args:
-            username (str): username.
+    args:
+        username (str): username.
 
-        returns:
-            list: Authorised keys for the specified user.
+    returns:
+        list: Authorised keys for the specified user.
     """
     authorized_keys_path = '{0}/.ssh/authorized_keys'.format(os.path.expanduser('~{0}'.format(username)))
     rnd_chars = random_string()
@@ -88,11 +89,11 @@ def read_authorized_keys(username=None):
 def write_authorized_keys(user=None):
     """Write public keys back to authorized_keys file. Create keys directory if it doesn't already exist.
 
-        args:
-            user (User): Instance of User containing keys.
+    args:
+        user (User): Instance of User containing keys.
 
-        returns:
-            list: Authorised keys for the specified user.
+    returns:
+        list: Authorised keys for the specified user.
     """
     authorized_keys = list()
     authorized_keys_dir = '{0}/.ssh'.format(os.path.expanduser('~{0}'.format(user.name)))

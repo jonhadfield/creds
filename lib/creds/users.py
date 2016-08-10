@@ -18,6 +18,7 @@ from external.six import text_type
 
 
 class User(object):
+
     """Representation of a user and their related credentials."""
 
     def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None,
@@ -71,6 +72,7 @@ class User(object):
 class Users(MutableSequence):
 
     """A collection of users and methods to manage them."""
+
     def __init__(self, user_list=None, oktypes=User):
         """Create instance of Users collection.
 
