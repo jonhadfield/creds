@@ -42,9 +42,9 @@ def random_string(length=10):
 
 def base64encode(_input=None):
     """ Return base64 encoded representation of a string. """
-    if PY2: # pragma: no cover
+    if PY2:  # pragma: no cover
         return base64.b64encode(_input)
-    elif PY3: # pragma: no cover
+    elif PY3:  # pragma: no cover
         if isinstance(_input, bytes):
             return base64.b64encode(_input).decode('UTF-8')
         elif isinstance(_input, str):
@@ -56,9 +56,9 @@ def base64decode(_input=None):
     missing_padding = 4 - len(_input) % 4
     if missing_padding:
         _input += '=' * missing_padding
-    if PY2: # pragma: no cover
+    if PY2:  # pragma: no cover
         return base64.decodestring(_input)
-    elif PY3: # pragma: no cover
+    elif PY3:  # pragma: no cover
         if isinstance(_input, bytes):
             return base64.b64decode(_input).decode('UTF-8')
         elif isinstance(_input, str):

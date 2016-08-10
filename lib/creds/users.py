@@ -80,9 +80,9 @@ class Users(MutableSequence):
         self.oktypes = oktypes
         self._user_list = input_list
 
-    def check(self, v):
+    def check(self, value):
         """ Check types. """
-        if not isinstance(v, self.oktypes):
+        if not isinstance(value, self.oktypes):
             raise TypeError
 
     def __iter__(self):
