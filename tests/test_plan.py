@@ -20,14 +20,15 @@ GROUPDEL = '/usr/sbin/groupdel'
 
 
 def test_users_instance_creation():
-    input_user_list = list()
-    input_user_list.append(
+    # input_user_list = list()
+    users = Users()
+    users.append(
         User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'))
-    input_user_list.append(
+    users.append(
         User(name='jane', uid=1002, gid=1002, gecos='jane comment', home_dir='/home/jane', shell='/bin/bash'))
-    input_user_list.append(
+    users.append(
         User(name='freddy', uid=1003, gid=1003, gecos='freddy comment', home_dir='/home/freddy', shell='/bin/false'))
-    assert Users(input_list=input_user_list)
+    assert len(users) == 3
 
 
 def test_create_and_execute_plan_to_create_new_user():
@@ -41,7 +42,7 @@ def test_create_and_execute_plan_to_create_new_user():
         User(name='testuserx1234', home_dir='/home/testuserx1234', shell='/bin/false', gid=59999, uid=59999,
              gecos='test user gecos',
              public_keys=public_keys))
-    provided_users = Users(input_list=provided_users)
+    provided_users = Users(user_list=provided_users)
 
     plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
                        protected_users=['travis', 'couchdb', 'ubuntu'])
@@ -69,7 +70,7 @@ def test_create_and_execute_plan_to_create_identical_user():
     current_users = Users.from_passwd()
     provided_users = list()
     provided_users.append(User(name='testuserx1234', uid=59999, gecos='test user gecos'))
-    provided_users = Users(input_list=provided_users)
+    provided_users = Users(user_list=provided_users)
     plan = create_plan(existing_users=current_users, proposed_users=provided_users)
     execute_plan(plan=plan)
     current_users = Users.from_passwd()
@@ -88,7 +89,7 @@ def test_update_existing_user():
     provided_users.append(
         User(name='testuserx1234', uid=59999, gecos='test user gecos update', home_dir='/tmp/temp',
              public_keys=[public_key]))
-    provided_users = Users(input_list=provided_users)
+    provided_users = Users(user_list=provided_users)
     plan = create_plan(existing_users=current_users, proposed_users=provided_users)
     assert plan[0]['action'] == 'update'
     execute_plan(plan)
@@ -104,7 +105,7 @@ def test_execute_plan_to_create_new_user_with_clashing_uid():
     current_users = Users.from_passwd()
     provided_users = list()
     provided_users.append(User(name='testuserx1234', uid=59999, gecos='test user gecos'))
-    provided_users = Users(input_list=provided_users)
+    provided_users = Users(user_list=provided_users)
     plan = create_plan(existing_users=current_users, proposed_users=provided_users)
     assert plan[0]['action'] == 'add'
     assert plan[0]['proposed_user'].name == "testuserx1234"
@@ -114,7 +115,7 @@ def test_execute_plan_to_create_new_user_with_clashing_uid():
     current_users = Users.from_passwd()
     provided_users = list()
     provided_users.append(User(name='testuserx12345', uid=59999, gecos='test user gecos'))
-    provided_users = Users(input_list=provided_users)
+    provided_users = Users(user_list=provided_users)
     plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True)
     assert plan[0]['error'] == 'uid_clash'
     execute_plan(plan=plan)
@@ -131,7 +132,7 @@ def test_execute_plan_to_update_existing_user():
     provided_users.append(
         User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
              shell='/bin/false', public_keys=[public_key_2]))
-    provided_users = Users(input_list=provided_users)
+    provided_users = Users(user_list=provided_users)
     plan = create_plan(existing_users=current_users, proposed_users=provided_users)
     assert plan[0]['proposed_user'].gecos == '\"test user gecos update\"'
     execute_plan(plan=plan)
@@ -161,7 +162,7 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
     current_users = Users.from_passwd()
     provided_users_2 = [User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
                              shell='/bin/false', public_keys=[public_key_1, public_key_2])]
-    provided_users_2 = Users(input_list=provided_users_2)
+    provided_users_2 = Users(user_list=provided_users_2)
     plan = create_plan(existing_users=current_users, proposed_users=provided_users_2)
     execute_plan(plan=plan)
     updated_users = Users.from_passwd()
@@ -173,7 +174,7 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
     provided_users_3 = [
         User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
              shell='/bin/false', public_keys=[public_key_3, public_key_4])]
-    provided_users_3 = Users(input_list=provided_users_3)
+    provided_users_3 = Users(user_list=provided_users_3)
     plan = create_plan(existing_users=current_users, proposed_users=provided_users_3)
     execute_plan(plan=plan)
     updated_users = Users.from_passwd()
@@ -185,7 +186,7 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
     provided_users_4 = [
         User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
              shell='/bin/false', public_keys=[public_key_2, public_key_4])]
-    provided_users_4 = Users(input_list=provided_users_4)
+    provided_users_4 = Users(user_list=provided_users_4)
     plan = create_plan(existing_users=current_users, proposed_users=provided_users_4)
     execute_plan(plan=plan)
     updated_users = Users.from_passwd()

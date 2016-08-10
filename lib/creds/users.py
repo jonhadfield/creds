@@ -70,15 +70,15 @@ class User(object):
 class Users(MutableSequence):
     """ A collection of users and methods to manage them. """
 
-    def __init__(self, input_list=None, oktypes=User):
-        """ Populate a list of users.
+    def __init__(self, user_list=None, oktypes=User):
+        """ Create instance of Users collection.
 
         args:
-            input_list (list): A list of User instances.
+            oktypes (object): The acceptable types of instances..
         """
         check_platform()
         self.oktypes = oktypes
-        self._user_list = input_list
+        self._user_list = user_list if user_list else list()
 
     def check(self, value):
         """ Check types. """
@@ -135,7 +135,7 @@ class Users(MutableSequence):
     def from_dict(cls, input_dict=None):
         """ Create collection from dictionary content. """
         result = Users._construct_user_list(raw_users=input_dict.get('users'))
-        return cls(input_list=result)
+        return cls(user_list=result)
 
     @classmethod
     def from_yaml(cls, file_loc=None):
@@ -144,7 +144,7 @@ class Users(MutableSequence):
             users_yaml = yaml.safe_load(stream)
             if isinstance(users_yaml, dict):
                 result = Users._construct_user_list(raw_users=users_yaml.get('users'))
-                return cls(input_list=result)
+                return cls(user_list=result)
             else:
                 raise ValueError('No YAML object could be decoded')
 
@@ -157,7 +157,7 @@ class Users(MutableSequence):
             except ValueError:
                 raise
             result = Users._construct_user_list(raw_users=users_json.get('users'))
-            return cls(input_list=result)
+            return cls(user_list=result)
 
     @classmethod
     def from_passwd(cls, uid_min=None, uid_max=None):
@@ -180,7 +180,7 @@ class Users(MutableSequence):
                             shell=text_type(pwd_entry.pw_shell),
                             public_keys=read_authorized_keys(username=pwd_entry.pw_name))
                 input_list.append(user)
-        return cls(input_list=input_list)
+        return cls(user_list=input_list)
 
     @staticmethod
     def _construct_user_list(raw_users=None):
