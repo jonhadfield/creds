@@ -25,6 +25,17 @@ def test_users_instance_creation():
     assert Users(input_list=input_user_list)
 
 
+def test_users_del_method():
+    users = Users(
+        input_list=[
+            User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'),
+            User(name='jane', uid=1002, gid=1002, gecos='jane comment', home_dir='/home/jane', shell='/bin/sh')
+        ])
+    assert len(users) == 2
+    del users[0]
+    assert len(users) == 1
+
+
 def test_get_users_from_passwd():
     """ Test creation of a Users collection based on users found in the passwd file. """
     users = Users.from_passwd()
