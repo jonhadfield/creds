@@ -2,5 +2,6 @@
 omit = setup.py
 exclude_lines =
     pragma: no cover
+    pragma: no branch
     if PY2
     if PY3
