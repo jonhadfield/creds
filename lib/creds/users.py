@@ -99,7 +99,7 @@ class Users(MutableSequence):
         return self._user_list[index]
 
     def insert(self, index, value):
-        """ Some docstring. """
+        """ Insert an instance of User into the collection. """
         self.check(value)
         self._user_list.insert(index, value)
 
@@ -111,10 +111,6 @@ class Users(MutableSequence):
         user_list = ['{0}'.format(user) for user in self._user_list]
         output = '\n'.join(user_list)
         return output
-
-    def add(self, users=None):
-        """ Some docstring. """
-        self._user_list.extend(users)
 
     def __delitem__(self, index):
         del self._user_list[index]
