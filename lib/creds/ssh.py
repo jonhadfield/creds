@@ -27,7 +27,7 @@ class PublicKey(object):
 
     @property
     def b64encoded(self):
-        """Return a base64 encoding of the key
+        """Return a base64 encoding of the key.
 
         returns:
             str: base64 encoding of the public key
@@ -86,8 +86,7 @@ def read_authorized_keys(username=None):
 
 
 def write_authorized_keys(user=None):
-    """Write public keys back to authorized_keys file.
-        Create keys directory if it doesn't already exist.
+    """Write public keys back to authorized_keys file. Create keys directory if it doesn't already exist.
 
         args:
             user (User): Instance of User containing keys.

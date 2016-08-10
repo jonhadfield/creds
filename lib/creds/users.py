@@ -47,6 +47,7 @@ class User(object):
     @property
     def gecos(self):
         """Force double quoted gecos.
+
         returns:
             str: The double quoted gecos.
         """
@@ -290,8 +291,7 @@ def get_user_by_uid(uid=None, users=None):
 
 
 def compare_user(passed_user=None, user_list=None):
-    """Check if supplied User instance exists in supplied Users list and,
-        if so, return the differences.
+    """Check if supplied User instance exists in supplied Users list and, if so, return the differences.
 
     args:
         passed_user (User): the user instance to check for differences
