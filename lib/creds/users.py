@@ -20,6 +20,7 @@ from external.six import text_type
 
 class User(object):
     """ Representation of a user and their related credentials. """
+
     def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None,
                  home_dir=None, shell=None, public_keys=None):
         """ Make a user.
@@ -134,21 +135,8 @@ class Users(MutableSequence):
     @classmethod
     def from_dict(cls, input_dict=None):
         """ Some docstring. """
-        input_list = list()
-        for user_dict in input_dict.get('users'):
-            public_keys = None
-            if user_dict.get('public_keys'):
-                public_keys = [PublicKey(b64encoded=x, raw=None)
-                               for x in user_dict.get('public_keys')]
-            input_list.append(User(name=user_dict.get('name'),
-                                   passwd=user_dict.get('passwd'),
-                                   uid=user_dict.get('uid'),
-                                   gid=user_dict.get('gid'),
-                                   home_dir=user_dict.get('home_dir'),
-                                   gecos=user_dict.get('gecos'),
-                                   shell=user_dict.get('shell'),
-                                   public_keys=public_keys))
-        return cls(input_list=input_list)
+        result = Users._construct_user_list(raw_users=input_dict.get('users'))
+        return cls(input_list=result)
 
     @classmethod
     def from_yaml(cls, file_loc=None):
@@ -156,21 +144,8 @@ class Users(MutableSequence):
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             users_yaml = yaml.safe_load(stream)
             if isinstance(users_yaml, dict):
-                input_list = list()
-                for user_dict in users_yaml.get('users'):
-                    public_keys = None
-                    if user_dict.get('public_keys'):
-                        public_keys = [PublicKey(b64encoded=x, raw=None)
-                                       for x in user_dict.get('public_keys')]
-                    input_list.append(User(name=user_dict.get('name'),
-                                           passwd=user_dict.get('passwd'),
-                                           uid=user_dict.get('uid'),
-                                           gid=user_dict.get('gid'),
-                                           home_dir=user_dict.get('home_dir'),
-                                           gecos=user_dict.get('gecos'),
-                                           shell=user_dict.get('shell'),
-                                           public_keys=public_keys))
-                return cls(input_list=input_list)
+                result = Users._construct_user_list(raw_users=users_yaml.get('users'))
+                return cls(input_list=result)
             else:
                 raise ValueError('No YAML object could be decoded')
 
@@ -182,21 +157,8 @@ class Users(MutableSequence):
                 users_json = json.load(stream)
             except ValueError:
                 raise
-            input_list = list()
-            for user_dict in users_json.get('users'):
-                public_keys = None
-                if user_dict.get('public_keys'):
-                    public_keys = [PublicKey(b64encoded=x, raw=None)
-                                   for x in user_dict.get('public_keys')]
-                input_list.append(User(name=user_dict.get('name'),
-                                       passwd=user_dict.get('passwd'),
-                                       uid=user_dict.get('uid'),
-                                       gid=user_dict.get('gid'),
-                                       home_dir=user_dict.get('home_dir'),
-                                       gecos=user_dict.get('gecos'),
-                                       shell=user_dict.get('shell'),
-                                       public_keys=public_keys))
-            return cls(input_list=input_list)
+            result = Users._construct_user_list(raw_users=users_json.get('users'))
+            return cls(input_list=result)
 
     @classmethod
     def from_passwd(cls, uid_min=None, uid_max=None):
@@ -220,6 +182,24 @@ class Users(MutableSequence):
                             public_keys=read_authorized_keys(username=pwd_entry.pw_name))
                 input_list.append(user)
         return cls(input_list=input_list)
+
+    @staticmethod
+    def _construct_user_list(raw_users=None):
+        input_list = list()
+        for user_dict in raw_users:
+            public_keys = None
+            if user_dict.get('public_keys'):
+                public_keys = [PublicKey(b64encoded=x, raw=None)
+                               for x in user_dict.get('public_keys')]
+            input_list.append(User(name=user_dict.get('name'),
+                                   passwd=user_dict.get('passwd'),
+                                   uid=user_dict.get('uid'),
+                                   gid=user_dict.get('gid'),
+                                   home_dir=user_dict.get('home_dir'),
+                                   gecos=user_dict.get('gecos'),
+                                   shell=user_dict.get('shell'),
+                                   public_keys=public_keys))
+        return input_list
 
 
 # TODO: Detect based on OS
