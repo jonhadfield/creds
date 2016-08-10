@@ -11,7 +11,8 @@ from external.six import text_type
 
 
 class PublicKey(object):
-    """ Representation of a public key. """
+
+    """Representation of a public key."""
     def __init__(self, raw=None, b64encoded=None):
         """ Make a public key.
 

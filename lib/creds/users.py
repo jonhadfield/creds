@@ -68,8 +68,8 @@ class User(object):
 
 
 class Users(MutableSequence):
-    """ A collection of users and methods to manage them. """
 
+    """ A collection of users and methods to manage them. """
     def __init__(self, user_list=None, oktypes=User):
         """ Create instance of Users collection.
 
