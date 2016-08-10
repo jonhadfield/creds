@@ -1,23 +1,7 @@
 # -*- coding: utf-8 -*-
-from typing import List, Dict, AnyStr, Optional
+from typing import List, Dict, AnyStr, Optional, Any
+
 from creds.ssh import PublicKey
-
-class Users(object):
-    def __init__(self, input_list: List) -> None: pass
-
-    def describe_users(self, users_filter: Dict) -> List: pass
-
-    @classmethod
-    def from_dict(cls, input_dict: Dict) -> List: pass
-
-    @classmethod
-    def from_yaml(cls, file_loc: str) -> List: pass
-
-    @classmethod
-    def from_json(cls, file_loc: str) -> List: pass
-
-    @classmethod
-    def from_passwd(cls, uid_min: int, uid_max: int) -> List: pass
 
 
 class User(object):
@@ -34,6 +18,24 @@ class User(object):
         self.public_keys = public_keys
 
     def gecos(self) -> str: pass
+
+
+class Users(object):
+    def __init__(self, oktypes: Optional[Any]) -> None: pass
+
+    def describe_users(self, users_filter: Dict) -> List: pass
+
+    @classmethod
+    def from_dict(cls, input_dict: Dict) -> List: pass
+
+    @classmethod
+    def from_yaml(cls, file_loc: str) -> List: pass
+
+    @classmethod
+    def from_json(cls, file_loc: str) -> List: pass
+
+    @classmethod
+    def from_passwd(cls, uid_min: int, uid_max: int) -> List: pass
 
 
 def generate_add_user_command(proposed_user: User) -> List[str]: pass

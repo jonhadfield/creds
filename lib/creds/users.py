@@ -124,7 +124,7 @@ class Users(MutableSequence):
 
     def describe_users(self, users_filter=None):
         """Return a list of users matching a filter (if provided)."""
-        user_list = list()
+        user_list = Users()
         for user in self._user_list:
             if users_filter:
                 if users_filter.get('name') == user.name or users_filter.get('uid') == user.uid:
@@ -166,7 +166,7 @@ class Users(MutableSequence):
     def from_passwd(uid_min=None, uid_max=None):
         """Create collection from locally discovered data, e.g. /etc/passwd."""
         import pwd
-        input_list = Users()
+        users = Users()
         passwd_list = pwd.getpwall()
         if not uid_min:
             uid_min = UID_MIN
@@ -182,19 +182,19 @@ class Users(MutableSequence):
                             home_dir=text_type(pwd_entry.pw_dir),
                             shell=text_type(pwd_entry.pw_shell),
                             public_keys=read_authorized_keys(username=pwd_entry.pw_name))
-                input_list.append(user)
-        return input_list
+                users.append(user)
+        return users
 
     @staticmethod
     def _construct_user_list(raw_users=None):
         """Construct a list of User objects from a list of dicts."""
-        input_list = Users()
+        users = Users()
         for user_dict in raw_users:
             public_keys = None
             if user_dict.get('public_keys'):
                 public_keys = [PublicKey(b64encoded=x, raw=None)
                                for x in user_dict.get('public_keys')]
-            input_list.append(User(name=user_dict.get('name'),
+            users.append(User(name=user_dict.get('name'),
                                    passwd=user_dict.get('passwd'),
                                    uid=user_dict.get('uid'),
                                    gid=user_dict.get('gid'),
@@ -202,7 +202,7 @@ class Users(MutableSequence):
                                    gecos=user_dict.get('gecos'),
                                    shell=user_dict.get('shell'),
                                    public_keys=public_keys))
-        return input_list
+        return users
 
 
 # TODO: Detect based on OS
