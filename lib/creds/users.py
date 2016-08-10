@@ -18,7 +18,7 @@ from external.six import text_type
 
 
 class User(object):
-    """ Representation of a user and their related credentials. """
+    """Representation of a user and their related credentials."""
 
     def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None,
                  home_dir=None, shell=None, public_keys=None):
@@ -46,7 +46,7 @@ class User(object):
 
     @property
     def gecos(self):
-        """ Force double quoted gecos.
+        """Force double quoted gecos.
         returns:
             str: The double quoted gecos.
         """
@@ -69,7 +69,7 @@ class User(object):
 
 class Users(MutableSequence):
 
-    """ A collection of users and methods to manage them. """
+    """A collection of users and methods to manage them. """
     def __init__(self, user_list=None, oktypes=User):
         """ Create instance of Users collection.
 
@@ -99,7 +99,7 @@ class Users(MutableSequence):
         return self._user_list[index]
 
     def insert(self, index, value):
-        """ Insert an instance of User into the collection. """
+        """Insert an instance of User into the collection. """
         self.check(value)
         self._user_list.insert(index, value)
 
@@ -116,7 +116,7 @@ class Users(MutableSequence):
         del self._user_list[index]
 
     def remove(self, username=None):
-        """ Remove User instance based on their user name. """
+        """Remove User instance based on supplied user name."""
         self._user_list = [user for user in self._user_list if user.name != username]
 
     def describe_users(self, users_filter=None):
@@ -133,13 +133,13 @@ class Users(MutableSequence):
 
     @classmethod
     def from_dict(cls, input_dict=None):
-        """ Create collection from dictionary content. """
+        """Create collection from dictionary content."""
         result = Users._construct_user_list(raw_users=input_dict.get('users'))
         return cls(user_list=result)
 
     @classmethod
     def from_yaml(cls, file_loc=None):
-        """ Create collection from a YAML file. """
+        """Create collection from a YAML file."""
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             users_yaml = yaml.safe_load(stream)
             if isinstance(users_yaml, dict):
@@ -150,7 +150,7 @@ class Users(MutableSequence):
 
     @classmethod
     def from_json(cls, file_loc=None):
-        """ Create collection from a JSON file. """
+        """Create collection from a JSON file."""
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             try:
                 users_json = json.load(stream)
@@ -161,7 +161,7 @@ class Users(MutableSequence):
 
     @classmethod
     def from_passwd(cls, uid_min=None, uid_max=None):
-        """ Create collection from locally discovered data, e.g. /etc/passwd. """
+        """Create collection from locally discovered data, e.g. /etc/passwd."""
         import pwd
         input_list = list()
         passwd_list = pwd.getpwall()
@@ -184,7 +184,7 @@ class Users(MutableSequence):
 
     @staticmethod
     def _construct_user_list(raw_users=None):
-        """ Construct a list of User objects from a list of dicts. """
+        """Construct a list of User objects from a list of dicts."""
         input_list = list()
         for user_dict in raw_users:
             public_keys = None
@@ -212,7 +212,7 @@ if os.geteuid() != 0:
 
 
 def generate_add_user_command(proposed_user=None):
-    """ Generate command to add a user.
+    """Generate command to add a user.
 
     args:
         proposed_user (User): User
@@ -238,7 +238,7 @@ def generate_add_user_command(proposed_user=None):
 
 
 def generate_modify_user_command(task=None):
-    """ Generate command to modify existing user to become the proposed user.
+    """Generate command to modify existing user to become the proposed user.
 
     args:
         task (dict): A proposed user and the differences between it and the existing user
@@ -264,7 +264,7 @@ def generate_modify_user_command(task=None):
 
 
 def generate_delete_user_command(username=None):
-    """ Generate command to delete a user.
+    """Generate command to delete a user.
 
     args:
         username (str): user name
@@ -277,7 +277,7 @@ def generate_delete_user_command(username=None):
 
 
 def get_user_by_uid(uid=None, users=None):
-    """ Return a list of users, from a supplied list, based on their uid.
+    """Return a list of users, from a supplied list, based on their uid.
 
     args:
         uid (id): A user id
@@ -290,7 +290,7 @@ def get_user_by_uid(uid=None, users=None):
 
 
 def compare_user(passed_user=None, user_list=None):
-    """ Check if supplied User instance exists in supplied Users list and,
+    """Check if supplied User instance exists in supplied Users list and,
         if so, return the differences.
 
     args:

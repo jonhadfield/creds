@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" A class to represent a users' keys and functions to manage them."""
+"""A class to represent a users' keys and functions to manage them."""
 from __future__ import (unicode_literals, print_function)
 
 import os
@@ -14,7 +14,7 @@ class PublicKey(object):
 
     """Representation of a public key."""
     def __init__(self, raw=None, b64encoded=None):
-        """ Make a public key.
+        """Make a public key.
 
         args:
             raw (str): raw public key
@@ -27,7 +27,7 @@ class PublicKey(object):
 
     @property
     def b64encoded(self):
-        """ Return a base64 encoding of the key
+        """Return a base64 encoding of the key
 
         returns:
             str: base64 encoding of the public key
@@ -39,7 +39,7 @@ class PublicKey(object):
 
     @property
     def raw(self):
-        """ Return raw key.
+        """Return raw key.
 
         returns:
             str: raw key
@@ -59,7 +59,7 @@ class PublicKey(object):
 # TODO: Keep temporary copy so we can check for race condition.
 
 def read_authorized_keys(username=None):
-    """ Read public keys from specified user's authorized_keys file.
+    """Read public keys from specified user's authorized_keys file.
 
         args:
             username (str): username.
@@ -86,7 +86,7 @@ def read_authorized_keys(username=None):
 
 
 def write_authorized_keys(user=None):
-    """ Write public keys back to authorized_keys file.
+    """Write public keys back to authorized_keys file.
         Create keys directory if it doesn't already exist.
 
         args:
