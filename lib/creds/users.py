@@ -20,7 +20,6 @@ from external.six import text_type
 
 class User(object):
     """ Representation of a user and their related credentials. """
-
     def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None,
                  home_dir=None, shell=None, public_keys=None):
         """ Make a user.
@@ -48,7 +47,6 @@ class User(object):
     @property
     def gecos(self):
         """ Force double quoted gecos.
-
         returns:
             str: The double quoted gecos.
         """
