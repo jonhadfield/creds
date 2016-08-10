@@ -106,7 +106,7 @@ def test_users_add_and_remove():
         input_list=[rod])
     assert len(users) == 1
     jane = User(name='jane')
-    users.add([jane])
+    users.append(jane)
     assert len(users) == 2
     users.remove(username='jane')
     assert len(users) == 1
