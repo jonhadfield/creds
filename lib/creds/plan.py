@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Functions to generate a list of steps to transition from the current state to the desired state. """
+"""Functions to generate a list of steps to transition from the current state to the desired state."""
 from __future__ import (unicode_literals, print_function)
 
 from creds import constants
@@ -12,7 +12,7 @@ from external.six import iteritems
 
 def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, protected_users=None,
                 allow_non_unique_id=None):
-    """ Determine what changes are required
+    """Determine what changes are required.
 
     args:
         existing_users (Users): List of discovered users
