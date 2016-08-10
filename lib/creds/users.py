@@ -7,6 +7,7 @@ import io
 import json
 import os
 import shlex
+from collections import MutableSequence
 
 import yaml
 
@@ -17,17 +18,24 @@ from creds.utils import check_platform
 from external.six import text_type
 
 
-class Users(object):
+class Users(MutableSequence):
     """ A collection of users and methods to manage them. """
 
-    def __init__(self, input_list=None):
+    def __init__(self, input_list=None, oktypes=object):
         """ Populate a list of users.
 
         args:
             input_list (list): A list of User instances.
         """
         check_platform()
+        self.oktypes = oktypes
         self._user_list = input_list
+        self.list = list()
+
+    def check(self, v):
+        """ Check types. """
+        if not isinstance(v, self.oktypes):
+            raise (TypeError, v)
 
     def __iter__(self):
         for user in self._user_list:
@@ -42,6 +50,15 @@ class Users(object):
     def __getitem__(self, index):
         return self._user_list[index]
 
+    def insert(self, i, v):
+        """ Some docstring. """
+        self.check(v)
+        self.list.insert(i, v)
+
+    def __setitem__(self, index, value):
+        self.check(value)
+        self.list[index] = value
+
     def __repr__(self):
         user_list = ['{0}'.format(user) for user in self._user_list]
         output = '\n'.join(user_list)
@@ -50,6 +67,9 @@ class Users(object):
     def add(self, users=None):
         """ Some docstring. """
         self._user_list.extend(users)
+
+    def __delitem__(self, i):
+        del self.list[i]
 
     def remove(self, username=None):
         """ Some docstring. """
