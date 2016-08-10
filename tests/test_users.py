@@ -36,6 +36,20 @@ def test_users_del_method():
     assert len(users) == 1
 
 
+def test_users_insert_method():
+    users = Users(
+        input_list=[
+            User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'),
+            User(name='jane', uid=1002, gid=1002, gecos='jane comment', home_dir='/home/jane', shell='/bin/sh')
+        ])
+    users.insert(0, User(name='freddy', uid=1003, gid=1003, gecos='freddy comment',
+                         home_dir='/home/freddy', shell='/bin/false'))
+    assert len(users) == 3
+    with pytest.raises(TypeError):
+        users.insert(0, dict(name='freddy', uid=1003, gid=1003, gecos='freddy comment',
+                             home_dir='/home/freddy', shell='/bin/false'))
+
+
 def test_get_users_from_passwd():
     """ Test creation of a Users collection based on users found in the passwd file. """
     users = Users.from_passwd()

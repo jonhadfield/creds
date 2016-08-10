@@ -18,10 +18,61 @@ from creds.utils import check_platform
 from external.six import text_type
 
 
+class User(object):
+    """ Representation of a user and their related credentials. """
+
+    def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None,
+                 home_dir=None, shell=None, public_keys=None):
+        """ Make a user.
+
+        args:
+            name (str): user name.
+            passwd (str, optional): password
+            uid (int, optional): user id
+            gid (int, optional): group id
+            gecos (str): GECOS field
+            home_dir (str): home directory
+            shell (str): shell
+            public_keys (list): list of public key instances
+        """
+        check_platform()
+        self.name = name
+        self.passwd = passwd
+        self.uid = uid
+        self.gid = gid
+        self._gecos = gecos
+        self.home_dir = home_dir
+        self.shell = shell
+        self.public_keys = public_keys
+
+    @property
+    def gecos(self):
+        """ Force double quoted gecos.
+
+        returns:
+            str: The double quoted gecos.
+        """
+        if not self._gecos:
+            return None
+        if self._gecos.startswith(text_type('\'')) and self._gecos.endswith(text_type('\'')):
+            self._gecos = '\"{0}\"'.format(self._gecos[1:-1])
+            return self._gecos
+        elif self._gecos.startswith(text_type('\"')) and self._gecos.endswith(text_type('\"')):
+            return self._gecos
+        else:
+            return '\"{0}\"'.format(self._gecos)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return '<User {0}>'.format(self.name)
+
+
 class Users(MutableSequence):
     """ A collection of users and methods to manage them. """
 
-    def __init__(self, input_list=None, oktypes=(list, tuple)):
+    def __init__(self, input_list=None, oktypes=User):
         """ Populate a list of users.
 
         args:
@@ -34,7 +85,7 @@ class Users(MutableSequence):
     def check(self, v):
         """ Check types. """
         if not isinstance(v, self.oktypes):
-            raise (TypeError, v)
+            raise TypeError
 
     def __iter__(self):
         for user in self._user_list:
@@ -175,57 +226,6 @@ class Users(MutableSequence):
                             public_keys=read_authorized_keys(username=pwd_entry.pw_name))
                 input_list.append(user)
         return cls(input_list=input_list)
-
-
-class User(object):
-    """ Representation of a user and their related credentials. """
-
-    def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None,
-                 home_dir=None, shell=None, public_keys=None):
-        """ Make a user.
-
-        args:
-            name (str): user name.
-            passwd (str, optional): password
-            uid (int, optional): user id
-            gid (int, optional): group id
-            gecos (str): GECOS field
-            home_dir (str): home directory
-            shell (str): shell
-            public_keys (list): list of public key instances
-        """
-        check_platform()
-        self.name = name
-        self.passwd = passwd
-        self.uid = uid
-        self.gid = gid
-        self._gecos = gecos
-        self.home_dir = home_dir
-        self.shell = shell
-        self.public_keys = public_keys
-
-    @property
-    def gecos(self):
-        """ Force double quoted gecos.
-
-        returns:
-            str: The double quoted gecos.
-        """
-        if not self._gecos:
-            return None
-        if self._gecos.startswith(text_type('\'')) and self._gecos.endswith(text_type('\'')):
-            self._gecos = '\"{0}\"'.format(self._gecos[1:-1])
-            return self._gecos
-        elif self._gecos.startswith(text_type('\"')) and self._gecos.endswith(text_type('\"')):
-            return self._gecos
-        else:
-            return '\"{0}\"'.format(self._gecos)
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        return '<User {0}>'.format(self.name)
 
 
 # TODO: Detect based on OS
