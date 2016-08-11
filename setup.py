@@ -50,7 +50,7 @@ if not version:
 setup(
     name='creds',
     version=version,
-    description='Python credentials manager.',
+    description='Creds is a library for managing linux user accounts and credentials.',
     # long_description=readme + '\n\n' + history,
     author='Jon Hadfield',
     author_email='jon@lessknown.co.uk',
