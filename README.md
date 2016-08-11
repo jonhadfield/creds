@@ -28,8 +28,8 @@ Example Usage
 Read a list of users from users.yml and create them (if missing) or update (if existing): 
 
 ```
-from creds.cred_users import Users
-from creds.cred_plan import (create_plan, execute_plan)
+from creds.users import Users
+from creds.plan import (create_plan, execute_plan)
 
 existing_users = Users.from_passwd()  # Get a list of existing users and their keys
 proposed_users = Users.from_yaml('users.yml')  # Read the proposed list of users and their keys
