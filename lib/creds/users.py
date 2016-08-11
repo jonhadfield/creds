@@ -4,7 +4,6 @@ from __future__ import (unicode_literals, print_function)
 
 import io
 import json
-import os
 import shlex
 from collections import MutableSequence
 
@@ -13,7 +12,7 @@ import yaml
 from creds.constants import UID_MAX, UID_MIN
 from creds.ssh import PublicKey
 from creds.ssh import read_authorized_keys
-from creds.utils import check_platform
+from creds.utils import (check_platform, sudo_check)
 from external.six import text_type
 
 
@@ -206,9 +205,6 @@ class Users(MutableSequence):
 USERMOD = '/usr/sbin/usermod'
 USERADD = '/usr/sbin/useradd'
 USERDEL = '/usr/sbin/userdel'
-SUDO = ''
-if os.geteuid() != 0:
-    SUDO = '/usr/bin/sudo'
 
 
 def generate_add_user_command(proposed_user=None):
@@ -220,7 +216,7 @@ def generate_add_user_command(proposed_user=None):
     returns:
         list: The command string split into shell-like syntax
     """
-    command = '{0} {1}'.format(SUDO, USERADD)
+    command = '{0} {1}'.format(sudo_check(), USERADD)
     if proposed_user.uid:
         command = '{0} -u {1}'.format(command, proposed_user.uid)
     if proposed_user.gid:
@@ -248,7 +244,7 @@ def generate_modify_user_command(task=None):
     """
     name = task['proposed_user'].name
     comparison_result = task['user_comparison']['result']
-    command = '{0} {1}'.format(SUDO, USERMOD)
+    command = '{0} {1}'.format(sudo_check(), USERMOD)
     if comparison_result.get('replacement_uid_value'):
         command = '{0} -u {1}'.format(command, comparison_result.get('replacement_uid_value'))
     if comparison_result.get('replacement_gid_value'):
@@ -272,7 +268,7 @@ def generate_delete_user_command(username=None):
     returns:
         list: The user delete command string split into shell-like syntax
     """
-    command = '{0} {1} -r {2}'.format(SUDO, USERDEL, username)
+    command = '{0} {1} -r {2}'.format(sudo_check(), USERDEL, username)
     return shlex.split(str(command))
 
 
