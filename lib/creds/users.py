@@ -77,7 +77,7 @@ class Users(MutableSequence):
         """Create instance of Users collection.
 
         args:
-            oktypes (object): The acceptable types of instances..
+            oktypes (type): The acceptable types of instances..
         """
         check_platform()
         self.oktypes = oktypes
@@ -134,39 +134,36 @@ class Users(MutableSequence):
                     user_list.append(user)
         return user_list
 
-    @staticmethod
-    def from_dict(input_dict=None):
+    @classmethod
+    def from_dict(cls, input_dict=None):
         """Create collection from dictionary content."""
-        result = Users._construct_user_list(raw_users=input_dict.get('users'))
-        return result
+        return cls.construct_user_list(raw_users=input_dict.get('users'))
 
-    @staticmethod
-    def from_yaml(file_loc=None):
+    @classmethod
+    def from_yaml(cls, file_loc=None):
         """Create collection from a YAML file."""
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             users_yaml = yaml.safe_load(stream)
             if isinstance(users_yaml, dict):
-                result = Users._construct_user_list(raw_users=users_yaml.get('users'))
-                return result
+                return cls.construct_user_list(raw_users=users_yaml.get('users'))
             else:
                 raise ValueError('No YAML object could be decoded')
 
-    @staticmethod
-    def from_json(file_loc=None):
+    @classmethod
+    def from_json(cls, file_loc=None):
         """Create collection from a JSON file."""
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             try:
                 users_json = json.load(stream)
             except ValueError:
-                raise
-            result = Users._construct_user_list(raw_users=users_json.get('users'))
-            return result
+                raise ValueError('No JSON object could be decoded')
+            return cls.construct_user_list(raw_users=users_json.get('users'))
 
     @staticmethod
     def from_passwd(uid_min=None, uid_max=None):
         """Create collection from locally discovered data, e.g. /etc/passwd."""
         import pwd
-        users = Users()
+        users = Users(oktypes=User)
         passwd_list = pwd.getpwall()
         if not uid_min:
             uid_min = UID_MIN
@@ -186,7 +183,7 @@ class Users(MutableSequence):
         return users
 
     @staticmethod
-    def _construct_user_list(raw_users=None):
+    def construct_user_list(raw_users=None):
         """Construct a list of User objects from a list of dicts."""
         users = Users()
         for user_dict in raw_users:
@@ -195,13 +192,13 @@ class Users(MutableSequence):
                 public_keys = [PublicKey(b64encoded=x, raw=None)
                                for x in user_dict.get('public_keys')]
             users.append(User(name=user_dict.get('name'),
-                                   passwd=user_dict.get('passwd'),
-                                   uid=user_dict.get('uid'),
-                                   gid=user_dict.get('gid'),
-                                   home_dir=user_dict.get('home_dir'),
-                                   gecos=user_dict.get('gecos'),
-                                   shell=user_dict.get('shell'),
-                                   public_keys=public_keys))
+                              passwd=user_dict.get('passwd'),
+                              uid=user_dict.get('uid'),
+                              gid=user_dict.get('gid'),
+                              home_dir=user_dict.get('home_dir'),
+                              gecos=user_dict.get('gecos'),
+                              shell=user_dict.get('shell'),
+                              public_keys=public_keys))
         return users
 
 

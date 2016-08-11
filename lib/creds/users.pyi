@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from typing import List, Dict, AnyStr, Optional, Any
+from typing import List, Dict, AnyStr, Optional, Any, Type
 from typing import TypeVar, Generic
 
 from creds.ssh import PublicKey
@@ -23,9 +23,13 @@ class User(object):
 
 T = TypeVar('T')
 
+U = TypeVar('U', bound=User)
+
 
 class Users(Generic[T]):
-    def __init__(self, oktypes: Optional[Any]) -> None: pass
+    def __init__(self, oktypes: Optional[Type[U]]) -> None:
+        self._user_list = list()
+        self.oktypes = oktypes
 
     def describe_users(self, users_filter: Dict) -> List: pass
 
@@ -57,6 +61,8 @@ class Users(Generic[T]):
     @classmethod
     def from_passwd(cls, uid_min: int, uid_max: int) -> List: pass
 
+    @staticmethod
+    def construct_user_list(raw_users: dict) -> Generic[T]: pass
 
 def generate_add_user_command(proposed_user: User) -> List[str]: pass
 
