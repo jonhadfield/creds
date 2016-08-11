@@ -9,6 +9,7 @@ import platform
 import random
 import string
 import subprocess
+import sys
 
 from creds.constants import SUPPORTED_PLATFORMS
 from external.six import (PY2, PY3)
@@ -25,7 +26,7 @@ def sudo_check():
 def check_platform():
     """Return an error if this is being used on unsupported platform."""
     if not platform.system() in SUPPORTED_PLATFORMS:
-        raise OSError('Linux is currently the only supported platform for this library.')
+        sys.exit('Linux is currently the only supported platform for this library.')
 
 
 def execute_command(command=None):

@@ -162,7 +162,7 @@ def test_user_instance_with_missing_gecos():
 
 def test_platform_detection(monkeypatch):
     monkeypatch.setattr("platform.system", lambda: 'Darwin')
-    with pytest.raises(OSError):
+    with pytest.raises(SystemExit):
         name = 'Fred'
         uid = 1024
         gid = 1024
