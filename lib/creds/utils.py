@@ -11,7 +11,7 @@ import string
 import subprocess
 import sys
 
-from creds.constants import SUPPORTED_PLATFORMS
+from creds.constants import (SUPPORTED_PLATFORMS, CMD_SUDO)
 from external.six import (PY2, PY3)
 
 
@@ -19,7 +19,7 @@ def sudo_check():
     """Return the string 'sudo' if current user isn't root."""
     sudo_cmd = ''
     if os.geteuid() != 0:
-        sudo_cmd = 'sudo'
+        sudo_cmd = CMD_SUDO
     return sudo_cmd
 
 

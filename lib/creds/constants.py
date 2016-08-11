@@ -5,6 +5,7 @@ from __future__ import (unicode_literals, print_function)
 import os
 import io
 
+from distutils import spawn
 from external.six import text_type, PY2, PY3
 
 SUPPORTED_PLATFORMS = ['Linux']
@@ -14,6 +15,10 @@ PURGE_UNDEFINED = False  # Purge any users that fall between UID_MIN and UID_MAX
 DEFAULT_UID_MIN = 1000  # The lowest uid to consider safe to manage
 DEFAULT_UID_MAX = 60000  # The maximum uid to consider safe to manage
 
+CMD_SUDO = spawn.find_executable("sudo")
+CMD_USERADD = spawn.find_executable("useradd")
+CMD_USERMOD = spawn.find_executable("usermod")
+CMD_USERDEL = spawn.find_executable("userdel")
 
 def login_defs():
     """Discover the minimum and maximum UID number."""

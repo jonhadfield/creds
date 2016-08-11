@@ -175,6 +175,6 @@ def test_platform_detection(monkeypatch):
 
 def test_user_detection(monkeypatch):
     monkeypatch.setattr("os.geteuid", lambda: 1)
-    assert sudo_check() == 'sudo'
+    assert sudo_check().endswith('sudo')
     monkeypatch.setattr("os.geteuid", lambda: 0)
     assert sudo_check() == ''
