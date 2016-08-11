@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """This module contains common helper functions."""
 
-from __future__ import (unicode_literals, print_function)
+from __future__ import unicode_literals
 
 import base64
 import os
@@ -16,10 +16,10 @@ from external.six import (PY2, PY3)
 
 def sudo_check():
     """Return the string 'sudo' if current user isn't root."""
+    sudo_cmd = ''
     if os.geteuid() != 0:
-        return 'sudo'
-    else:
-        return ''
+        sudo_cmd = 'sudo'
+    return sudo_cmd
 
 
 def check_platform():

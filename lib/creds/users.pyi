@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from typing import List, Dict, AnyStr, Optional, Any
+from typing import TypeVar, Generic
 
 from creds.ssh import PublicKey
 
@@ -20,10 +21,29 @@ class User(object):
     def gecos(self) -> str: pass
 
 
-class Users(object):
+T = TypeVar('T')
+
+
+class Users(Generic[T]):
     def __init__(self, oktypes: Optional[Any]) -> None: pass
 
     def describe_users(self, users_filter: Dict) -> List: pass
+
+    def check(self, value: Any) -> None: pass
+
+    def insert(self, index: int, value: User) -> None: pass
+
+    def remove(self, username: str) -> None: pass
+
+    def __iter__(self) -> User: pass
+
+    def __len__(self) -> int: pass
+
+    def __getitem__(self, index: int) -> User: pass
+
+    def __setitem__(self, index: int, value: User) -> None: pass
+
+    def __delitem__(self, index: int) -> None: pass
 
     @classmethod
     def from_dict(cls, input_dict: Dict) -> List: pass

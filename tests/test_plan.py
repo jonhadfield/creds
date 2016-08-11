@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, unicode_literals, print_function)
+from __future__ import (absolute_import, unicode_literals)
 
 import shlex
 
@@ -34,7 +34,6 @@ def test_create_and_execute_plan_to_create_new_user():
     delete_test_user_and_group()
     create_test_group()
     current_users = Users.from_passwd()
-    print(type(current_users))
     provided_users = Users()
     public_keys = [PublicKey(
         b64encoded=PUBLIC_KEYS[0]['encoded'])]
@@ -42,7 +41,6 @@ def test_create_and_execute_plan_to_create_new_user():
         User(name='testuserx1234', home_dir='/home/testuserx1234', shell='/bin/false', gid=59999, uid=59999,
              gecos='test user gecos',
              public_keys=public_keys))
-    print(type(current_users))
     plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
                        protected_users=['travis', 'couchdb', 'ubuntu'])
     assert plan[0]['state'] == 'missing'
