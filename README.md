@@ -18,8 +18,8 @@ User vs System accounts
 -----------------------
 Linux has a default range of user ids to provide to system and user accounts, found in /etc/login.defs.
 Creds will attempt to read this file to determine which accounts are in scope for management and, if unavailable, will default to:
-> UID_MIN = 1000  # User accounts will have an id of 1000 or more
-> UID_MAX = 60000  # User accounts will not have an id higher than 60000
+> UID_MIN = 1000  #  User accounts will have an id of 1000 or more  
+> UID_MAX = 60000  #  User accounts will not have an id higher than 60000
 
 
 Example Usage
