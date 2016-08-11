@@ -25,6 +25,7 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
        list: Differences between discovered and proposed users with a
              list of operations that will achieve the desired state.
     """
+
     plan = list()
     proposed_usernames = list()
 

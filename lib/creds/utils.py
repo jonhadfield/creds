@@ -5,11 +5,11 @@ from __future__ import unicode_literals
 
 import base64
 import os
-import platform
 import random
 import string
 import subprocess
 import sys
+import platform
 
 from creds.constants import (SUPPORTED_PLATFORMS, CMD_SUDO)
 from external.six import (PY2, PY3)
@@ -22,11 +22,14 @@ def sudo_check():
         sudo_cmd = CMD_SUDO
     return sudo_cmd
 
+def get_platform():
+    """Return platform name"""
+    return platform.system()
 
 def check_platform():
     """Return an error if this is being used on unsupported platform."""
     if not platform.system() in SUPPORTED_PLATFORMS:
-        sys.exit('Linux is currently the only supported platform for this library.')
+        sys.exit('Linux and FreeBSD are currently the only supported platform for this library.')
 
 
 def execute_command(command=None):

@@ -7,7 +7,9 @@ import shlex
 from creds.plan import (create_plan, execute_plan)
 from creds.users import (Users, User)
 from creds.ssh import PublicKey
-from creds.utils import (execute_command, sudo_check)
+from creds.utils import (execute_command, sudo_check, get_platform)
+from creds.constants import (LINUX_CMD_USERADD, LINUX_CMD_USERMOD, LINUX_CMD_USERDEL,
+                             LINUX_CMD_GROUP_ADD, LINUX_CMD_GROUP_DEL, BSD_CMD_PW)
 from external.six import text_type
 from .sample_data import PUBLIC_KEYS
 
@@ -18,6 +20,7 @@ USERDEL = '/usr/sbin/userdel'
 GROUPADD = '/usr/sbin/groupadd'
 GROUPDEL = '/usr/sbin/groupdel'
 
+PLATFORM = get_platform()
 
 def test_users_instance_creation():
     users = Users()
@@ -34,7 +37,9 @@ def test_create_and_execute_plan_to_create_new_user():
     delete_test_user_and_group()
     create_test_group()
     current_users = Users.from_passwd()
+
     provided_users = Users()
+
     public_keys = [PublicKey(
         b64encoded=PUBLIC_KEYS[0]['encoded'])]
     provided_users.append(
@@ -42,7 +47,7 @@ def test_create_and_execute_plan_to_create_new_user():
              gecos='test user gecos',
              public_keys=public_keys))
     plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
-                       protected_users=['travis', 'couchdb', 'ubuntu'])
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'vagrant'])
     assert plan[0]['state'] == 'missing'
     assert plan[0]['proposed_user'].name == "testuserx1234"
     assert plan[0]['proposed_user'].home_dir == "/home/testuserx1234"
@@ -56,9 +61,10 @@ def test_create_and_execute_plan_to_create_new_user():
 
     current_users = Users.from_passwd()
     plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
-                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj'])
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant'])
     assert not plan
     delete_test_user_and_group()
+
 
 
 def test_create_and_execute_plan_to_create_identical_user():
@@ -117,6 +123,7 @@ def test_execute_plan_to_create_new_user_with_clashing_uid():
 
 def test_execute_plan_to_update_existing_user():
     """ Create a new user and then attempt to create another user with existing id """
+    delete_test_user_and_group()
     create_test_user()
     raw_public_key_2 = PUBLIC_KEYS[1].get('raw')
     public_key_2 = PublicKey(raw=raw_public_key_2)
@@ -188,21 +195,35 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
 
 
 def delete_test_user_and_group():
-    del_user_command = shlex.split(str('{0} {1} -r -f testuserx1234'.format(sudo_check(), USERDEL)))
-    execute_command(command=del_user_command)
-    del_group_command = shlex.split(str('{0} {1} testuserx1234'.format(sudo_check(), GROUPDEL)))
-    execute_command(command=del_group_command)
-    del_user_ssh_dir_command = shlex.split(str('/bin/rm -rf /tmp/.ssh'))
-    execute_command(command=del_user_ssh_dir_command)
+    if PLATFORM == 'Linux':
+        del_user_command = shlex.split(str('{0} {1} -r -f testuserx1234'.format(sudo_check(), LINUX_CMD_USERDEL)))
+        execute_command(command=del_user_command)
+    elif PLATFORM == 'FreeBSD':
+        del_user_command = shlex.split(str('{0} {1} userdel -r -n testuserx1234'.format(sudo_check(), BSD_CMD_PW)))
+        execute_command(command=del_user_command)
+    if PLATFORM == 'Linux':
+        del_group_command = shlex.split(str('{0} {1} testuserx1234'.format(sudo_check(), GROUPDEL)))
+        execute_command(command=del_group_command)
+    if PLATFORM == 'Linux':
+        del_user_ssh_dir_command = shlex.split(str('/bin/rm -rf /tmp/.ssh'))
+        execute_command(command=del_user_ssh_dir_command)
 
 
 def create_test_user():
-    command = shlex.split(
-        str('{0} {1} -u 59999 -c \"test user gecos\" -m  -s /bin/bash testuserx1234'.format(sudo_check(), USERADD)))
+    if PLATFORM == 'Linux':
+        command = shlex.split(
+            str('{0} {1} -u 59999 -c \"test user gecos\" -m  -s /bin/bash testuserx1234'.format(sudo_check(), LINUX_CMD_USERADD)))
+    elif PLATFORM == 'FreeBSD':
+        command = shlex.split(
+            str('{0} {1} useradd -u 59999 -c \"test user gecos\" -m  -s /bin/bash -n testuserx1234'.format(sudo_check(), BSD_CMD_PW)))
     assert execute_command(command=command)
 
 
 def create_test_group():
-    command = shlex.split(
-        str('{0} {1} -g 59999 testuserx1234'.format(sudo_check(), GROUPADD)))
+    if PLATFORM == 'Linux':
+        command = shlex.split(
+            str('{0} {1} -g 59999 testuserx1234'.format(sudo_check(), LINUX_CMD_GROUP_ADD)))
+    elif PLATFORM == 'FreeBSD':
+        command = shlex.split(
+            str('{0} {1} groupadd -g 59999 -n testuserx1234'.format(sudo_check(), BSD_CMD_PW)))
     assert execute_command(command=command)
