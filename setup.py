@@ -32,8 +32,8 @@ if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload -r pypi')
     sys.exit()
 
-requires = ['pyyaml']
-test_requirements = ['pytest>=2.9.2', 'pytest-cov>=2.3.0']
+requires = []
+test_requirements = ['pytest>=2.9.2', 'pytest-cov>=2.3.0', 'pyyaml']
 
 with open('lib/creds/__init__.py', 'r') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
@@ -42,16 +42,14 @@ with open('lib/creds/__init__.py', 'r') as fd:
 if not version:
     raise RuntimeError('Cannot find version information')
 
-# with open('README.rst', 'r', 'utf-8') as f:
-#     readme = f.read()
-# with open('HISTORY.rst', 'r', 'utf-8') as f:
-#     history = f.read()
+readme = open('README.md').read()
+long_description = readme
 
 setup(
     name='creds',
     version=version,
     description='Creds is a library for managing linux user accounts and credentials.',
-    # long_description=readme + '\n\n' + history,
+    long_description=long_description,
     author='Jon Hadfield',
     author_email='jon@lessknown.co.uk',
     url='http://github.com/jonhadfield/creds',
@@ -63,7 +61,7 @@ setup(
     license='MIT',
     zip_safe=False,
     classifiers=(
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: System Administrators',
         'Natural Language :: English',
         'License :: OSI Approved :: MIT License',

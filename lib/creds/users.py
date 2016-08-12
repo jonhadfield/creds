@@ -7,8 +7,6 @@ import json
 import shlex
 from collections import MutableSequence
 
-import yaml
-
 from creds.constants import (UID_MAX, UID_MIN, CMD_USERMOD, CMD_USERDEL, CMD_USERADD)
 from creds.ssh import PublicKey
 from creds.ssh import read_authorized_keys
@@ -141,6 +139,13 @@ class Users(MutableSequence):
     @classmethod
     def from_yaml(cls, file_loc=None):
         """Create collection from a YAML file."""
+        try:
+            import yaml
+        except ImportError:
+            import sys
+            sys.exit('PyYAML is not installed, but is required in order to parse YAML files.'
+                     '\nTo install, run:\n$ pip install PyYAML\nor visit'
+                     ' http://pyyaml.org/wiki/PyYAML for instructions.')
         with io.open(file_loc, encoding=text_type('utf-8')) as stream:
             users_yaml = yaml.safe_load(stream)
             if isinstance(users_yaml, dict):
