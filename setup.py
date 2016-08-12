@@ -29,7 +29,7 @@ class PyTest(TestCommand):
 
 
 if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
+    os.system('python setup.py sdist upload -r pypi')
     sys.exit()
 
 requires = ['pyyaml']
