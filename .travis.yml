@@ -1,3 +1,5 @@
+sudo: required
+dist: precise
 language: python
 python:
   - "3.5"
@@ -8,13 +10,10 @@ python:
   - "pypy"
   - "pypy3"
   - "nightly"
-sudo: required
-dist: precise
-before_install:
-  - pip install pytest pytest-cov coveralls PyYAML
 install:
-  - pip install .
+  - pip install coveralls
+  - pip install tox-travis
 script:
-  - py.test --cov-report term-missing --cov creds
+  - tox
 after_success:
-  coveralls
+  - coveralls
