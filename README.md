@@ -7,7 +7,7 @@
 Creds
 =====
 
-Creds is a library that simplifies the management of linux user accounts and their credentials.
+Creds is a library that simplifies the management of user accounts and their credentials on Linux and FreeBSD.
 
 Instead of issuing commands to create, update and delete users and their ssh keys, supply Creds with details of the users you want and it will take care of the implementation. 
 
