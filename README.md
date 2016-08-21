@@ -7,7 +7,7 @@
 Creds
 =====
 
-Creds is a library that simplifies the management of user accounts and their credentials on Linux and FreeBSD.
+Creds is a library that simplifies the management of user accounts and their credentials on Linux, FreeBSD and OpenBSD.
 
 Instead of issuing commands to create, update and delete users and their ssh keys, supply Creds with details of the users you want and it will take care of the implementation. 
 
@@ -18,7 +18,7 @@ User vs System accounts
 -----------------------
 Linux has a default range of user ids to provide to system and user accounts, found in /etc/login.defs.
 Creds will attempt to read this file to determine which accounts are in scope for management and, if unavailable, will default to:
-> UID_MIN = 1000  #  User accounts will have an id of 1000 or more  
+> UID_MIN = 1000  #  User accounts will have an id of 1000 or more
 > UID_MAX = 60000  #  User accounts will not have an id higher than 60000
 
 

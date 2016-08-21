@@ -48,7 +48,7 @@ long_description = readme
 setup(
     name='creds',
     version=version,
-    description='Creds is a library for managing linux user accounts and credentials.',
+    description='Creds is a library for managing Linux, FreeBSD and OpenBSD user accounts and credentials.',
     long_description=long_description,
     author='Jon Hadfield',
     author_email='jon@lessknown.co.uk',
@@ -67,6 +67,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: POSIX :: BSD :: Linux',
         'Operating System :: POSIX :: BSD :: FreeBSD',
+        'Operating System :: POSIX :: BSD :: OpenBSD',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
