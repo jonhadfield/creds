@@ -230,7 +230,7 @@ def generate_add_user_command(proposed_user=None):
         if proposed_user.home_dir:
             if os.path.exists(proposed_user.home_dir):
                 command = '{0} -d {1}'.format(command, proposed_user.home_dir)
-        else:
+        elif not os.path.exists('/home/{0}'.format(proposed_user.name)):
             command = '{0} -m'.format(command)
         if proposed_user.shell:
             command = '{0} -s {1}'.format(command, proposed_user.shell)
@@ -250,6 +250,7 @@ def generate_add_user_command(proposed_user=None):
         if proposed_user.shell:
             command = '{0} -s {1}'.format(command, proposed_user.shell)
         command = '{0} -n {1}'.format(command, proposed_user.name)
+
     return shlex.split(str(command))
 
 
