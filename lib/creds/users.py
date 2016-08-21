@@ -18,6 +18,7 @@ from external.six import text_type
 
 PLATFORM = get_platform()
 
+
 class User(object):
 
     """Representation of a user and their related credentials."""

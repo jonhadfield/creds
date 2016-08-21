@@ -22,9 +22,11 @@ def sudo_check():
         sudo_cmd = CMD_SUDO
     return sudo_cmd
 
+
 def get_platform():
     """Return platform name"""
     return platform.system()
+
 
 def check_platform():
     """Return an error if this is being used on unsupported platform."""
