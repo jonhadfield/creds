@@ -75,7 +75,7 @@ def read_authorized_keys(username=None):
     copy_result = execute_command(
         shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), authorized_keys_path, tmp_authorized_keys_path))))
     result_message = copy_result[1].decode('UTF-8')
-    if 'you must have a tty to run sudo' in result_message:
+    if 'you must have a tty to run sudo' in result_message:  # pragma: no cover
         raise OSError("/etc/sudoers is blocked sudo. Remove entry: 'Defaults    requiretty'.")
     elif 'No such file or directory' not in result_message:
         execute_command(shlex.split(str('{0} chmod 755 {1}'.format(sudo_check(), tmp_authorized_keys_path))))

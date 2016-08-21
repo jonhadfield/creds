@@ -144,7 +144,7 @@ class Users(MutableSequence):
         """Create collection from a YAML file."""
         try:
             import yaml
-        except ImportError:
+        except ImportError:  # pragma: no cover
             import sys
             sys.exit('PyYAML is not installed, but is required in order to parse YAML files.'
                      '\nTo install, run:\n$ pip install PyYAML\nor visit'
@@ -233,7 +233,7 @@ def generate_add_user_command(proposed_user=None):
         if proposed_user.shell:
             command = '{0} -s {1}'.format(command, proposed_user.shell)
         command = '{0} {1}'.format(command, proposed_user.name)
-    elif PLATFORM == 'FreeBSD':
+    elif PLATFORM == 'FreeBSD':  # pragma: FreeBSD
         command = '{0} {1} useradd'.format(sudo_check(), BSD_CMD_PW)
         if proposed_user.uid:
             command = '{0} -u {1}'.format(command, proposed_user.uid)
@@ -275,7 +275,7 @@ def generate_modify_user_command(task=None):
         if comparison_result.get('replacement_home_dir_value'):
             command = '{0} -d {1}'.format(command, comparison_result.get('replacement_home_dir_value'))
         command = '{0} {1}'.format(command, name)
-    if PLATFORM == 'FreeBSD':
+    if PLATFORM == 'FreeBSD':  # pragma: FreeBSD
         command = '{0} {1} usermod'.format(sudo_check(), BSD_CMD_PW)
         if comparison_result.get('replacement_uid_value'):
             command = '{0} -u {1}'.format(command, comparison_result.get('replacement_uid_value'))
@@ -302,7 +302,7 @@ def generate_delete_user_command(username=None):
     """
     if PLATFORM in ('Linux', 'OpenBSD'):
         command = '{0} {1} -r {2}'.format(sudo_check(), LINUX_CMD_USERDEL, username)
-    elif PLATFORM == 'FreeBSD':
+    elif PLATFORM == 'FreeBSD':  # pragma: FreeBSD
         command = '{0} {1} userdel -r -n {2}'.format(sudo_check(), BSD_CMD_PW, username)
     return shlex.split(str(command))
 

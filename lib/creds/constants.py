@@ -43,9 +43,9 @@ def login_defs():
                 uid_min = int(line.split()[1].strip())
             if line[:7] == text_type('UID_MAX'):
                 uid_max = int(line.split()[1].strip())
-    if not uid_min:
+    if not uid_min:  # pragma: no cover
         uid_min = DEFAULT_UID_MIN
-    if not uid_max:
+    if not uid_max:  # pragma: no cover
         uid_max = DEFAULT_UID_MAX
     return uid_min, uid_max
 
