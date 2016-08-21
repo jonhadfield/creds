@@ -18,7 +18,7 @@ utils: Common helper functions.
 from __future__ import (unicode_literals, print_function)
 
 __title__ = 'creds'
-__version__ = '1.0.7'
+__version__ = '1.0.8'
 __author__ = 'Jon Hadfield'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2016 Jon Hadfield'
