@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import io
 import json
+import os
 import shlex
 from collections import MutableSequence
 
@@ -227,7 +228,8 @@ def generate_add_user_command(proposed_user=None):
         if proposed_user.gecos:
             command = '{0} -c \'{1}\''.format(command, proposed_user.gecos)
         if proposed_user.home_dir:
-            command = '{0} -d {1}'.format(command, proposed_user.home_dir)
+            if os.path.exists(proposed_user.home_dir):
+                command = '{0} -d {1}'.format(command, proposed_user.home_dir)
         else:
             command = '{0} -m'.format(command)
         if proposed_user.shell:
