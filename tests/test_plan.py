@@ -195,7 +195,7 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
 
 
 def delete_test_user_and_group():
-    if PLATFORM == 'Linux':
+    if PLATFORM in ('Linux', 'OpenBSD'):
         del_user_command = shlex.split(str('{0} {1} -r -f testuserx1234'.format(sudo_check(), LINUX_CMD_USERDEL)))
         execute_command(command=del_user_command)
     elif PLATFORM == 'FreeBSD':
@@ -210,7 +210,7 @@ def delete_test_user_and_group():
 
 
 def create_test_user():
-    if PLATFORM == 'Linux':
+    if PLATFORM in ('Linux', 'OpenBSD'):
         command = shlex.split(
             str('{0} {1} -u 59999 -c \"test user gecos\" -m  -s /bin/bash testuserx1234'.format(sudo_check(), LINUX_CMD_USERADD)))
     elif PLATFORM == 'FreeBSD':
@@ -220,7 +220,7 @@ def create_test_user():
 
 
 def create_test_group():
-    if PLATFORM == 'Linux':
+    if PLATFORM in ('Linux', 'OpenBSD'):
         command = shlex.split(
             str('{0} {1} -g 59999 testuserx1234'.format(sudo_check(), LINUX_CMD_GROUP_ADD)))
     elif PLATFORM == 'FreeBSD':

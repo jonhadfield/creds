@@ -218,7 +218,7 @@ def generate_add_user_command(proposed_user=None):
     returns:
         list: The command string split into shell-like syntax
     """
-    if PLATFORM == 'Linux':
+    if PLATFORM in ('Linux', 'OpenBSD'):
         command = '{0} {1}'.format(sudo_check(), LINUX_CMD_USERADD)
         if proposed_user.uid:
             command = '{0} -u {1}'.format(command, proposed_user.uid)
@@ -262,7 +262,7 @@ def generate_modify_user_command(task=None):
     """
     name = task['proposed_user'].name
     comparison_result = task['user_comparison']['result']
-    if PLATFORM == 'Linux':
+    if PLATFORM in ('Linux', 'OpenBSD'):
         command = '{0} {1}'.format(sudo_check(), LINUX_CMD_USERMOD)
         if comparison_result.get('replacement_uid_value'):
             command = '{0} -u {1}'.format(command, comparison_result.get('replacement_uid_value'))
@@ -300,7 +300,7 @@ def generate_delete_user_command(username=None):
     returns:
         list: The user delete command string split into shell-like syntax
     """
-    if PLATFORM == 'Linux':
+    if PLATFORM in ('Linux', 'OpenBSD'):
         command = '{0} {1} -r {2}'.format(sudo_check(), LINUX_CMD_USERDEL, username)
     elif PLATFORM == 'FreeBSD':
         command = '{0} {1} userdel -r -n {2}'.format(sudo_check(), BSD_CMD_PW, username)
