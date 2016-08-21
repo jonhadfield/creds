@@ -42,7 +42,7 @@ with open('lib/creds/__init__.py', 'r') as fd:
 if not version:
     raise RuntimeError('Cannot find version information')
 
-readme = open('README.md').read()
+readme = open('README.rst').read()
 long_description = readme
 
 setup(
