@@ -69,7 +69,7 @@ def test_create_and_execute_plan_to_create_new_user():
 
 def test_create_and_execute_plan_to_create_identical_user():
     delete_test_user_and_group()
-    # create_test_user()
+    create_test_user()
     current_users = Users.from_passwd()
     provided_users = Users()
     provided_users.append(User(name='testuserx1234', uid=59999, gecos='test user gecos'))
@@ -195,16 +195,18 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
 
 
 def delete_test_user_and_group():
-    if PLATFORM in ('Linux', 'OpenBSD'):
+    if PLATFORM == 'Linux':
         del_user_command = shlex.split(str('{0} {1} -r -f testuserx1234'.format(sudo_check(), LINUX_CMD_USERDEL)))
+        execute_command(command=del_user_command)
+    elif PLATFORM == 'OpenBSD':
+        del_user_command = shlex.split(str('{0} {1} -r testuserx1234'.format(sudo_check(), LINUX_CMD_USERDEL)))
         execute_command(command=del_user_command)
     elif PLATFORM == 'FreeBSD':
         del_user_command = shlex.split(str('{0} {1} userdel -r -n testuserx1234'.format(sudo_check(), BSD_CMD_PW)))
         execute_command(command=del_user_command)
-    if PLATFORM == 'Linux':
+    if PLATFORM in ('Linux', 'OpenBSD'):
         del_group_command = shlex.split(str('{0} {1} testuserx1234'.format(sudo_check(), GROUPDEL)))
         execute_command(command=del_group_command)
-    if PLATFORM == 'Linux':
         del_user_ssh_dir_command = shlex.split(str('/bin/rm -rf /tmp/.ssh'))
         execute_command(command=del_user_ssh_dir_command)
 
