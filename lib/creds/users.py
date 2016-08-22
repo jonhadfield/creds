@@ -70,6 +70,12 @@ class User(object):
     def __repr__(self):
         return '<User {0}>'.format(self.name)
 
+    def to_dict(self):
+        """ Return the user as a dict. """
+        public_keys = [public_key.b64encoded for public_key in self.public_keys]
+        return dict(name=self.name, passwd=self.passwd, uid=self.uid, gid=self.gid, gecos=self.gecos,
+                    home_dir=self.home_dir, shell=self.shell, public_keys=public_keys)
+
 
 class Users(MutableSequence):
 
@@ -210,6 +216,20 @@ class Users(MutableSequence):
                               public_keys=public_keys))
         return users
 
+
+    def to_dict(self):
+        users = dict(users=list())
+        for user in self:
+            users['users'].append(user.to_dict())
+        return users
+
+
+    def export(self, filepath=None, export_format=None):
+        with io.open(filepath, mode='w') as export_file:
+            if export_format == 'yaml':
+                import yaml
+                yaml.safe_dump(self.to_dict(), export_file, default_flow_style=False)
+        return True
 
 def generate_add_user_command(proposed_user=None):
     """Generate command to add a user.

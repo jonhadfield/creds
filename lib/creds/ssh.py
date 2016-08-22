@@ -56,6 +56,9 @@ class PublicKey(object):
     def __repr__(self):
         return 'PublicKey(raw=\"{0}\", b64encoded=\"{1}\"'.format(self.raw, self.b64encoded)
 
+    def to_dict(self):
+        return
+
 
 # TODO: Keep temporary copy so we can check for race condition.
 

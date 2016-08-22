@@ -13,6 +13,26 @@ from tests.sample_data import PUBLIC_KEYS
 from .sample_data import SAMPLE_DICT
 
 
+def test_users_yaml_export(tmpdir):
+    """ Test the exporting of a Users sequence to yaml. """
+    export_file = tmpdir.mkdir("export").join("export.yml")
+    users = Users.from_dict(SAMPLE_DICT)
+    assert users.export(filepath=export_file.strpath, export_format='yaml')
+    exported_users = Users.from_yaml(export_file.strpath)
+    for index, _ in enumerate(users):
+        assert users[index].name == exported_users[index].name
+        assert users[index].passwd == exported_users[index].passwd
+        assert users[index].uid == exported_users[index].uid
+        assert users[index].gid == exported_users[index].gid
+        assert users[index].gecos == exported_users[index].gecos
+        assert users[index].home_dir == exported_users[index].home_dir
+        assert users[index].shell == exported_users[index].shell
+        for pk_index, _ in enumerate(users[index].public_keys):
+            assert users[index].public_keys[pk_index].raw == exported_users[index].public_keys[pk_index].raw
+            assert users[index].public_keys[pk_index].b64encoded == exported_users[index].public_keys[
+                pk_index].b64encoded
+
+
 def test_users_instance_creation():
     """ Test creation of instances of User and add to Users collection. """
     input_user_list = Users()
