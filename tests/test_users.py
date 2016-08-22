@@ -131,6 +131,13 @@ def test_users_add_and_remove():
     users.remove(username='jane')
     assert len(users) == 1
 
+def test_users_set_item():
+    rod = User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh')
+    users = Users()
+    users.append(rod)
+    users[0] = User(name='jane', uid=1002, gid=1002, gecos='jane comment', home_dir='/home/jane', shell='/bin/sh')
+    assert len(users) == 1
+    assert users[0].name == 'jane'
 
 def test_users_filters():
     users = Users()
