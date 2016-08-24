@@ -17,7 +17,7 @@ def test_users_yaml_export(tmpdir):
     """ Test the exporting of a Users sequence to yaml. """
     export_file = tmpdir.mkdir("export").join("export.yml")
     users = Users.from_dict(SAMPLE_DICT)
-    assert users.export(filepath=export_file.strpath, export_format='yaml')
+    assert users.export(file_path=export_file.strpath, export_format='yaml')
     exported_users = Users.from_yaml(export_file.strpath)
     for index, _ in enumerate(users):
         assert users[index].name == exported_users[index].name
@@ -32,6 +32,24 @@ def test_users_yaml_export(tmpdir):
             assert users[index].public_keys[pk_index].b64encoded == exported_users[index].public_keys[
                 pk_index].b64encoded
 
+def test_users_json_export(tmpdir):
+    """ Test the exporting of a Users sequence to yaml. """
+    export_file = tmpdir.mkdir("export").join("export.json")
+    users = Users.from_dict(SAMPLE_DICT)
+    assert users.export(file_path=export_file.strpath, export_format='json')
+    exported_users = Users.from_json(export_file.strpath)
+    for index, _ in enumerate(users):
+        assert users[index].name == exported_users[index].name
+        assert users[index].passwd == exported_users[index].passwd
+        assert users[index].uid == exported_users[index].uid
+        assert users[index].gid == exported_users[index].gid
+        assert users[index].gecos == exported_users[index].gecos
+        assert users[index].home_dir == exported_users[index].home_dir
+        assert users[index].shell == exported_users[index].shell
+        for pk_index, _ in enumerate(users[index].public_keys):
+            assert users[index].public_keys[pk_index].raw == exported_users[index].public_keys[pk_index].raw
+            assert users[index].public_keys[pk_index].b64encoded == exported_users[index].public_keys[
+                pk_index].b64encoded
 
 def test_users_instance_creation():
     """ Test creation of instances of User and add to Users collection. """
@@ -86,7 +104,7 @@ def test_get_users_from_dict():
 
 def test_get_users_from_yaml():
     """ Test creation of a Users collection based on a yaml document. """
-    users = Users.from_yaml(file_loc='{0}/yaml_input/basic.yml'.format(os.path.dirname(os.path.abspath(__file__))))
+    users = Users.from_yaml(file_path='{0}/yaml_input/basic.yml'.format(os.path.dirname(os.path.abspath(__file__))))
     assert isinstance(users, Users)
     assert isinstance(users[0], User)
     assert isinstance(users[0].uid, int)
@@ -96,7 +114,7 @@ def test_get_users_from_yaml():
 
 def test_get_users_from_json():
     """ Test creation of a Users collection based on a json document. """
-    users = Users.from_json(file_loc='{0}/json_input/basic.json'.format(os.path.dirname(os.path.abspath(__file__))))
+    users = Users.from_json(file_path='{0}/json_input/basic.json'.format(os.path.dirname(os.path.abspath(__file__))))
     assert isinstance(users, Users)
     assert isinstance(users[0], User)
     assert isinstance(users[0].uid, int)
@@ -105,13 +123,13 @@ def test_get_users_from_json():
 def test_get_users_from_invalid_yaml():
     """ Test a ValueError is raised if loading a yaml file of users with invalid syntax. """
     with pytest.raises(ValueError):
-        Users.from_yaml(file_loc='{0}/yaml_input/invalid.yml'.format(os.path.dirname(os.path.abspath(__file__))))
+        Users.from_yaml(file_path='{0}/yaml_input/invalid.yml'.format(os.path.dirname(os.path.abspath(__file__))))
 
 
 def test_get_users_from_invalid_json():
     """ Test a ValueError is raised if loading a json file of users with invalid syntax. """
     with pytest.raises(ValueError):
-        Users.from_json(file_loc='{0}/json_input/invalid.json'.format(os.path.dirname(os.path.abspath(__file__))))
+        Users.from_json(file_path='{0}/json_input/invalid.json'.format(os.path.dirname(os.path.abspath(__file__))))
 
 
 def test_users_repr():

@@ -132,7 +132,7 @@ class Users(MutableSequence):
 
     def describe_users(self, users_filter=None):
         """Return a list of users matching a filter (if provided)."""
-        user_list = Users()
+        user_list = Users(oktypes=User)
         for user in self._user_list:
             if users_filter:
                 if users_filter.get('name') == user.name or users_filter.get('uid') == user.uid:
@@ -148,7 +148,7 @@ class Users(MutableSequence):
         return cls.construct_user_list(raw_users=input_dict.get('users'))
 
     @classmethod
-    def from_yaml(cls, file_loc=None):
+    def from_yaml(cls, file_path=None):
         """Create collection from a YAML file."""
         try:
             import yaml
@@ -157,7 +157,7 @@ class Users(MutableSequence):
             sys.exit('PyYAML is not installed, but is required in order to parse YAML files.'
                      '\nTo install, run:\n$ pip install PyYAML\nor visit'
                      ' http://pyyaml.org/wiki/PyYAML for instructions.')
-        with io.open(file_loc, encoding=text_type('utf-8')) as stream:
+        with io.open(file_path, encoding=text_type('utf-8')) as stream:
             users_yaml = yaml.safe_load(stream)
             if isinstance(users_yaml, dict):
                 return cls.construct_user_list(raw_users=users_yaml.get('users'))
@@ -165,9 +165,9 @@ class Users(MutableSequence):
                 raise ValueError('No YAML object could be decoded')
 
     @classmethod
-    def from_json(cls, file_loc=None):
+    def from_json(cls, file_path=None):
         """Create collection from a JSON file."""
-        with io.open(file_loc, encoding=text_type('utf-8')) as stream:
+        with io.open(file_path, encoding=text_type('utf-8')) as stream:
             try:
                 users_json = json.load(stream)
             except ValueError:
@@ -200,7 +200,7 @@ class Users(MutableSequence):
     @staticmethod
     def construct_user_list(raw_users=None):
         """Construct a list of User objects from a list of dicts."""
-        users = Users()
+        users = Users(oktypes=User)
         for user_dict in raw_users:
             public_keys = None
             if user_dict.get('public_keys'):
@@ -218,17 +218,21 @@ class Users(MutableSequence):
 
 
     def to_dict(self):
+        """ Return a dict of the users. """
         users = dict(users=list())
         for user in self:
             users['users'].append(user.to_dict())
         return users
 
 
-    def export(self, filepath=None, export_format=None):
-        with io.open(filepath, mode='w') as export_file:
+    def export(self, file_path=None, export_format=None):
+        """ Write the users to a file. """
+        with io.open(file_path, mode='w') as export_file:
             if export_format == 'yaml':
                 import yaml
                 yaml.safe_dump(self.to_dict(), export_file, default_flow_style=False)
+            elif export_format == 'json':
+                json.dump(self.to_dict(), export_file)
         return True
 
 def generate_add_user_command(proposed_user=None):
@@ -240,6 +244,7 @@ def generate_add_user_command(proposed_user=None):
     returns:
         list: The command string split into shell-like syntax
     """
+    command = None
     if PLATFORM in ('Linux', 'OpenBSD'):
         command = '{0} {1}'.format(sudo_check(), LINUX_CMD_USERADD)
         if proposed_user.uid:
@@ -272,7 +277,8 @@ def generate_add_user_command(proposed_user=None):
             command = '{0} -s {1}'.format(command, proposed_user.shell)
         command = '{0} -n {1}'.format(command, proposed_user.name)
 
-    return shlex.split(str(command))
+    if command:
+        return shlex.split(str(command))
 
 
 def generate_modify_user_command(task=None):
@@ -286,6 +292,7 @@ def generate_modify_user_command(task=None):
     """
     name = task['proposed_user'].name
     comparison_result = task['user_comparison']['result']
+    command = None
     if PLATFORM in ('Linux', 'OpenBSD'):
         command = '{0} {1}'.format(sudo_check(), LINUX_CMD_USERMOD)
         if comparison_result.get('replacement_uid_value'):
@@ -312,7 +319,8 @@ def generate_modify_user_command(task=None):
         if comparison_result.get('replacement_home_dir_value'):
             command = '{0} -d {1}'.format(command, comparison_result.get('replacement_home_dir_value'))
         command = '{0} -n {1}'.format(command, name)
-    return shlex.split(str(command))
+    if command:
+        return shlex.split(str(command))
 
 
 def generate_delete_user_command(username=None):
@@ -324,11 +332,13 @@ def generate_delete_user_command(username=None):
     returns:
         list: The user delete command string split into shell-like syntax
     """
+    command = None
     if PLATFORM in ('Linux', 'OpenBSD'):
         command = '{0} {1} -r {2}'.format(sudo_check(), LINUX_CMD_USERDEL, username)
     elif PLATFORM == 'FreeBSD':  # pragma: FreeBSD
         command = '{0} {1} userdel -r -n {2}'.format(sudo_check(), BSD_CMD_PW, username)
-    return shlex.split(str(command))
+    if command:
+        return shlex.split(str(command))
 
 
 def get_user_by_uid(uid=None, users=None):
