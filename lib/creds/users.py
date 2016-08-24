@@ -227,12 +227,12 @@ class Users(MutableSequence):
 
     def export(self, file_path=None, export_format=None):
         """ Write the users to a file. """
-        with io.open(file_path, mode='w') as export_file:
+        with io.open(file_path, mode='wb') as export_file:
             if export_format == 'yaml':
                 import yaml
                 yaml.safe_dump(self.to_dict(), export_file, default_flow_style=False)
             elif export_format == 'json':
-                json.dump(self.to_dict(), export_file)
+                json.dump(obj=self.to_dict(), fp=export_file, )
         return True
 
 def generate_add_user_command(proposed_user=None):
