@@ -229,7 +229,7 @@ class Users(MutableSequence):
         """ Write the users to a file. """
         if export_format == 'yaml':
             import yaml
-            with io.open(file_path, mode='wb') as export_file:
+            with io.open(file_path, mode='w') as export_file:
                 yaml.safe_dump(self.to_dict(), export_file, default_flow_style=False)
         elif export_format == 'json':
             with io.open(file_path, mode='w') as export_file:
