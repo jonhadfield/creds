@@ -196,10 +196,10 @@ class Users(MutableSequence):
                             home_dir=text_type(pwd_entry.pw_dir),
                             shell=text_type(pwd_entry.pw_shell),
                             public_keys=read_authorized_keys(username=pwd_entry.pw_name),
-                            sudoers_entry=get_sudoers_entry(username=pwd_entry.pw_name, sudoers_entries=sudoers_entries))
+                            sudoers_entry=get_sudoers_entry(username=pwd_entry.pw_name,
+                                                            sudoers_entries=sudoers_entries))
                 users.append(user)
         return users
-
 
     @staticmethod
     def construct_user_list(raw_users=None):
@@ -217,7 +217,9 @@ class Users(MutableSequence):
                               home_dir=user_dict.get('home_dir'),
                               gecos=user_dict.get('gecos'),
                               shell=user_dict.get('shell'),
-                              public_keys=public_keys))
+                              public_keys=public_keys,
+                              sudoers_entry=user_dict.get('sudoers_entry')))
+
         return users
 
     def to_dict(self):
