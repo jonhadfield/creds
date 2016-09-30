@@ -5,14 +5,15 @@ from __future__ import unicode_literals
 
 import base64
 import os
+import platform
 import random
+import shlex
 import string
 import subprocess
 import sys
-import platform
 
 from creds.constants import (SUPPORTED_PLATFORMS, CMD_SUDO)
-from external.six import (PY2, PY3)
+from external.six import (PY2, PY3, text_type)
 
 
 def sudo_check():
@@ -69,3 +70,112 @@ def base64decode(_input=None):
             return base64.b64decode(_input).decode('UTF-8')
         elif isinstance(_input, str):
             return base64.b64decode(bytearray(_input, encoding='UTF-8')).decode('UTF-8')
+
+
+def read_sudoers():
+    """ Read the sudoers entry for the specified user.
+
+    args:
+        username (str): username.
+
+    returns:`r
+        str: sudoers entry for the specified user.
+    """
+    sudoers_path = '/etc/sudoers'
+    rnd_chars = random_string()
+    tmp_sudoers_path = '/tmp/sudoers_{0}'.format(rnd_chars)
+    sudoers_entries = list()
+    copy_result = execute_command(
+        shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), sudoers_path, tmp_sudoers_path))))
+    result_message = copy_result[1].decode('UTF-8')
+    if 'No such file or directory' not in result_message:
+        execute_command(shlex.split(str('{0} chmod 755 {1}'.format(sudo_check(), tmp_sudoers_path))))
+        with open(tmp_sudoers_path) as tmp_sudoers_file:
+            for line in tmp_sudoers_file:
+                stripped = line.strip().replace(os.linesep, '')
+                if stripped and not stripped.startswith('#'):
+                    sudoers_entries.append(stripped)
+        execute_command(shlex.split(str('{0} rm {1}'.format(sudo_check(), tmp_sudoers_path))))
+    return sudoers_entries
+
+
+def write_sudoers_entry(username=None, sudoers_entry=None):
+    """Write sudoers entry.
+
+    args:
+        user (User): Instance of User containing sudoers entry.
+
+    returns:
+        str: sudoers entry for the specified user.
+    """
+
+    sudoers_path = '/etc/sudoers'
+    rnd_chars = random_string()
+    tmp_sudoers_path = '/tmp/sudoers_{0}'.format(rnd_chars)
+    execute_command(
+        shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), sudoers_path, tmp_sudoers_path))))
+    execute_command(
+        shlex.split(str('{0} chmod 777 {1}'.format(sudo_check(), tmp_sudoers_path))))
+    with open(tmp_sudoers_path, mode=text_type('r')) as tmp_sudoers_file:
+        sudoers_entries = tmp_sudoers_file.readlines()
+    sudoers_output = list()
+    for entry in sudoers_entries:
+        if entry and not entry.startswith(username):
+            sudoers_output.append(entry)
+    if sudoers_entry:
+        sudoers_output.append('{0} {1}'.format(username, sudoers_entry))
+        sudoers_output.append('\n')
+    with open(tmp_sudoers_path, mode=text_type('w+')) as tmp_sudoers_file:
+        tmp_sudoers_file.writelines(sudoers_output)
+    execute_command(
+        shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), tmp_sudoers_path, sudoers_path))))
+    execute_command(shlex.split(str('{0} chown root:root {1}'.format(sudo_check(), sudoers_path))))
+    execute_command(shlex.split(str('{0} chmod 440 {1}'.format(sudo_check(), sudoers_path))))
+    execute_command(shlex.split(str('{0} rm {1}'.format(sudo_check(), tmp_sudoers_path))))
+
+
+def remove_sudoers_entry(username=None):
+    """Remove sudoers entry.
+
+    args:
+        user (User): Instance of User containing sudoers entry.
+
+    returns:
+        str: sudoers entry for the specified user.
+    """
+    sudoers_path = '/etc/sudoers'
+    rnd_chars = random_string()
+    tmp_sudoers_path = '/tmp/sudoers_{0}'.format(rnd_chars)
+    execute_command(
+        shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), sudoers_path, tmp_sudoers_path))))
+    execute_command(
+        shlex.split(str('{0} chmod 777 {1}'.format(sudo_check(), tmp_sudoers_path))))
+    with open(tmp_sudoers_path, mode=text_type('r')) as tmp_sudoers_file:
+        sudoers_entries = tmp_sudoers_file.readlines()
+    sudoers_output = list()
+    for entry in sudoers_entries:
+        if not entry.startswith(username):
+            sudoers_output.append(entry)
+    with open(tmp_sudoers_path, mode=text_type('w+')) as tmp_sudoers_file:
+        tmp_sudoers_file.writelines(sudoers_output)
+    execute_command(
+        shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), tmp_sudoers_path, sudoers_path))))
+    execute_command(shlex.split(str('{0} chown root:root {1}'.format(sudo_check(), sudoers_path))))
+    execute_command(shlex.split(str('{0} chmod 440 {1}'.format(sudo_check(), sudoers_path))))
+    execute_command(shlex.split(str('{0} rm {1}'.format(sudo_check(), tmp_sudoers_path))))
+
+
+
+def get_sudoers_entry(username=None, sudoers_entries=None):
+    """ Find the sudoers entry in the sudoers file for the specified user.
+
+    args:
+        username (str): username.
+        sudoers_entries (list): list of lines from the sudoers file.
+
+    returns:`r
+        str: sudoers entry for the specified user.
+    """
+    for entry in sudoers_entries:
+        if entry.startswith(username):
+            return entry.replace(username, '').strip()

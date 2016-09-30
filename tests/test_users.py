@@ -32,6 +32,7 @@ def test_users_yaml_export(tmpdir):
             assert users[index].public_keys[pk_index].b64encoded == exported_users[index].public_keys[
                 pk_index].b64encoded
 
+
 def test_users_json_export(tmpdir):
     """ Test the exporting of a Users sequence to yaml. """
     export_file = tmpdir.mkdir("export").join("export.json")
@@ -50,6 +51,7 @@ def test_users_json_export(tmpdir):
             assert users[index].public_keys[pk_index].raw == exported_users[index].public_keys[pk_index].raw
             assert users[index].public_keys[pk_index].b64encoded == exported_users[index].public_keys[
                 pk_index].b64encoded
+
 
 def test_users_instance_creation():
     """ Test creation of instances of User and add to Users collection. """
@@ -149,6 +151,7 @@ def test_users_add_and_remove():
     users.remove(username='jane')
     assert len(users) == 1
 
+
 def test_users_set_item():
     rod = User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh')
     users = Users()
@@ -156,6 +159,7 @@ def test_users_set_item():
     users[0] = User(name='jane', uid=1002, gid=1002, gecos='jane comment', home_dir='/home/jane', shell='/bin/sh')
     assert len(users) == 1
     assert users[0].name == 'jane'
+
 
 def test_users_filters():
     users = Users()

@@ -8,7 +8,8 @@ from creds.ssh import PublicKey
 class User(object):
     def __init__(self, name: AnyStr, passwd: Optional[AnyStr], uid: Optional[int], gid: Optional[int],
                  gecos: Optional[AnyStr], home_dir: Optional[AnyStr],
-                 shell: Optional[AnyStr], public_keys: Optional[List[PublicKey]]) -> None:
+                 shell: Optional[AnyStr], public_keys: Optional[List[PublicKey]],
+                 sudoers_entry: Optional[AnyStr]) -> None:
         self.name = name
         self.passwd = passwd
         self.uid = uid
@@ -17,6 +18,7 @@ class User(object):
         self.home_dir = home_dir
         self.shell = shell
         self.public_keys = public_keys
+        self.sudoers_entry = sudoers_entry
 
     def gecos(self) -> str: pass
 
@@ -65,6 +67,7 @@ class Users(Generic[T]):
 
     @staticmethod
     def construct_user_list(raw_users: dict) -> Generic[T]: pass
+
 
 def generate_add_user_command(proposed_user: User) -> List[str]: pass
 

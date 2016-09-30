@@ -2,14 +2,15 @@
 
 from __future__ import (absolute_import, unicode_literals)
 
+import getpass
 import shlex
 
+from creds.constants import (LINUX_CMD_USERADD, LINUX_CMD_USERDEL,
+                             LINUX_CMD_GROUP_ADD, BSD_CMD_PW)
 from creds.plan import (create_plan, execute_plan)
-from creds.users import (Users, User)
 from creds.ssh import PublicKey
-from creds.utils import (execute_command, sudo_check, get_platform)
-from creds.constants import (LINUX_CMD_USERADD, LINUX_CMD_USERMOD, LINUX_CMD_USERDEL,
-                             LINUX_CMD_GROUP_ADD, LINUX_CMD_GROUP_DEL, BSD_CMD_PW)
+from creds.users import (Users, User)
+from creds.utils import (execute_command, sudo_check, get_platform, remove_sudoers_entry)
 from external.six import text_type
 from .sample_data import PUBLIC_KEYS
 
@@ -22,7 +23,74 @@ GROUPDEL = '/usr/sbin/groupdel'
 
 PLATFORM = get_platform()
 
+CURRENT_USER = getpass.getuser()
+
+
+def test_execute_plan_to_update_existing_user():
+    """ Create a new user and then attempt to create another user with existing id """
+
+    delete_test_user_and_group()
+    create_test_user()
+    raw_public_key_2 = PUBLIC_KEYS[1].get('raw')
+    public_key_2 = PublicKey(raw=raw_public_key_2)
+    current_users = Users.from_passwd()
+    provided_users = Users()
+    provided_users.append(
+        User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
+             shell='/bin/false', public_keys=[public_key_2], sudoers_entry='ALL=(ALL:ALL) ALL'))
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
+    assert plan[0]['proposed_user'].gecos == '\"test user gecos update\"'
+    execute_plan(plan=plan)
+    updated_users = Users.from_passwd()
+    updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
+    assert len(updated_user) == 1
+    assert updated_user[0].name == 'testuserx1234'
+    assert updated_user[0].uid == 59998
+    assert updated_user[0].gid == 1
+    assert updated_user[0].gecos == '\"test user gecos update\"'
+    assert updated_user[0].shell == '/bin/false'
+    assert updated_user[0].public_keys[0].raw == text_type(PUBLIC_KEYS[1]['raw'])
+    assert updated_user[0].sudoers_entry == 'ALL=(ALL:ALL) ALL'
+    delete_test_user_and_group()
+
+
+def test_create_and_execute_plan_to_create_new_user_with_sudo_all():
+    """ Test creation of a user instance with sudo all and then write """
+    delete_test_user_and_group()
+    create_test_group()
+    current_users = Users.from_passwd()
+    provided_users = Users(oktypes=User)
+
+    public_keys = [PublicKey(
+        b64encoded=PUBLIC_KEYS[0]['encoded'])]
+    provided_users.append(
+        User(name='testuserx1234', home_dir='/home/testuserx1234', shell='/bin/false', gid=59999, uid=59999,
+             gecos='test user gecos',
+             public_keys=public_keys, sudoers_entry='ALL=(ALL)\tNOPASSWD:ALL'))
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'vagrant', CURRENT_USER])
+    assert plan[0]['state'] == 'missing'
+    assert plan[0]['proposed_user'].name == "testuserx1234"
+    assert plan[0]['proposed_user'].home_dir == "/home/testuserx1234"
+    assert plan[0]['proposed_user'].uid == 59999
+    assert plan[0]['proposed_user'].gid == 59999
+    assert plan[0]['proposed_user'].gecos == '\"test user gecos\"'
+    assert plan[0]['proposed_user'].shell == '/bin/false'
+    assert plan[0]['proposed_user'].sudoers_entry == 'ALL=(ALL)\tNOPASSWD:ALL'
+    assert type(plan[0]['proposed_user'].public_keys[0].raw) == text_type
+    assert plan[0]['proposed_user'].public_keys[0].raw == text_type(PUBLIC_KEYS[0]['raw'])
+    execute_plan(plan=plan)
+    current_users = Users.from_passwd()
+    created_user = current_users.describe_users(users_filter=dict(name='testuserx1234'))
+    assert created_user[0].sudoers_entry == 'ALL=(ALL)\tNOPASSWD:ALL'
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'vagrant', CURRENT_USER])
+    assert not plan
+
+
 def test_users_instance_creation():
+    """ Test creation of a user instance """
     users = Users()
     users.append(
         User(name='rod', uid=1001, gid=1001, gecos='rod comment', home_dir='/home/rod', shell='/bin/sh'))
@@ -34,6 +102,7 @@ def test_users_instance_creation():
 
 
 def test_create_and_execute_plan_to_create_new_user():
+    """ Test creation of user instance and then write """
     delete_test_user_and_group()
     create_test_group()
     current_users = Users.from_passwd()
@@ -47,7 +116,7 @@ def test_create_and_execute_plan_to_create_new_user():
              gecos='test user gecos',
              public_keys=public_keys))
     plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
-                       protected_users=['travis', 'couchdb', 'ubuntu', 'vagrant'])
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'vagrant', CURRENT_USER])
     assert plan[0]['state'] == 'missing'
     assert plan[0]['proposed_user'].name == "testuserx1234"
     assert plan[0]['proposed_user'].home_dir == "/home/testuserx1234"
@@ -61,9 +130,8 @@ def test_create_and_execute_plan_to_create_new_user():
 
     current_users = Users.from_passwd()
     plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
-                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant'])
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
     assert not plan
-
 
 
 def test_create_and_execute_plan_to_create_identical_user():
@@ -72,10 +140,12 @@ def test_create_and_execute_plan_to_create_identical_user():
     current_users = Users.from_passwd()
     provided_users = Users()
     provided_users.append(User(name='testuserx1234', uid=59999, gecos='test user gecos'))
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users)
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
     execute_plan(plan=plan)
     current_users = Users.from_passwd()
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users)
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
     assert not plan
     delete_test_user_and_group()
 
@@ -90,7 +160,8 @@ def test_update_existing_user():
     provided_users.append(
         User(name='testuserx1234', uid=59999, gecos='test user gecos update', home_dir='/tmp/temp',
              public_keys=[public_key]))
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users)
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
     assert plan[0]['action'] == 'update'
     execute_plan(plan)
     current_users = Users.from_passwd()
@@ -105,7 +176,8 @@ def test_execute_plan_to_create_new_user_with_clashing_uid():
     current_users = Users.from_passwd()
     provided_users = Users()
     provided_users.append(User(name='testuserx1234', uid=59999, gecos='test user gecos'))
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users)
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
     assert plan[0]['action'] == 'add'
     assert plan[0]['proposed_user'].name == "testuserx1234"
     assert plan[0]['proposed_user'].uid == 59999
@@ -114,35 +186,10 @@ def test_execute_plan_to_create_new_user_with_clashing_uid():
     current_users = Users.from_passwd()
     provided_users = Users()
     provided_users.append(User(name='testuserx12345', uid=59999, gecos='test user gecos'))
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True)
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, purge_undefined=True,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
     assert plan[0]['error'] == 'uid_clash'
     execute_plan(plan=plan)
-    delete_test_user_and_group()
-
-
-def test_execute_plan_to_update_existing_user():
-    """ Create a new user and then attempt to create another user with existing id """
-    delete_test_user_and_group()
-    create_test_user()
-    raw_public_key_2 = PUBLIC_KEYS[1].get('raw')
-    public_key_2 = PublicKey(raw=raw_public_key_2)
-    current_users = Users.from_passwd()
-    provided_users = Users()
-    provided_users.append(
-        User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
-             shell='/bin/false', public_keys=[public_key_2]))
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users)
-    assert plan[0]['proposed_user'].gecos == '\"test user gecos update\"'
-    execute_plan(plan=plan)
-    updated_users = Users.from_passwd()
-    updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
-    assert len(updated_user) == 1
-    assert updated_user[0].name == 'testuserx1234'
-    assert updated_user[0].uid == 59998
-    assert updated_user[0].gid == 1
-    assert updated_user[0].gecos == '\"test user gecos update\"'
-    assert updated_user[0].shell == '/bin/false'
-    assert updated_user[0].public_keys[0].raw == text_type(PUBLIC_KEYS[1]['raw'])
     delete_test_user_and_group()
 
 
@@ -160,8 +207,9 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
     current_users = Users.from_passwd()
     provided_users_2 = Users()
     provided_users_2.append(User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
-                             shell='/bin/false', public_keys=[public_key_1, public_key_2]))
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users_2)
+                                 shell='/bin/false', public_keys=[public_key_1, public_key_2]))
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users_2,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
     execute_plan(plan=plan)
     updated_users = Users.from_passwd()
     updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
@@ -171,8 +219,9 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
     current_users = Users.from_passwd()
     provided_users_3 = Users()
     provided_users_3.append(User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
-             shell='/bin/false', public_keys=[public_key_3, public_key_4]))
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users_3)
+                                 shell='/bin/false', public_keys=[public_key_3, public_key_4]))
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users_3,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
     execute_plan(plan=plan)
     updated_users = Users.from_passwd()
     updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
@@ -184,7 +233,8 @@ def test_execute_plan_to_update_existing_user_with_multiple_keys():
     provided_users_4.append(
         User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
              shell='/bin/false', public_keys=[public_key_2, public_key_4]))
-    plan = create_plan(existing_users=current_users, proposed_users=provided_users_4)
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users_4,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
     execute_plan(plan=plan)
     updated_users = Users.from_passwd()
     updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
@@ -208,16 +258,19 @@ def delete_test_user_and_group():
         execute_command(command=del_group_command)
         del_user_ssh_dir_command = shlex.split(str('/bin/rm -rf /tmp/.ssh'))
         execute_command(command=del_user_ssh_dir_command)
+    remove_sudoers_entry(username='testuserx1234')
     execute_command(command=shlex.split(str('{0} rm -rf /home/testuserx1234'.format(sudo_check()))))
 
 
 def create_test_user():
     if PLATFORM in ('Linux', 'OpenBSD'):
         command = shlex.split(
-            str('{0} {1} -u 59999 -c \"test user gecos\" -m  -s /bin/bash testuserx1234'.format(sudo_check(), LINUX_CMD_USERADD)))
+            str('{0} {1} -u 59999 -c \"test user gecos\" -m  -s /bin/bash testuserx1234'.format(sudo_check(),
+                                                                                                LINUX_CMD_USERADD)))
     elif PLATFORM == 'FreeBSD':
         command = shlex.split(
-            str('{0} {1} useradd -u 59999 -c \"test user gecos\" -m  -s /bin/bash -n testuserx1234'.format(sudo_check(), BSD_CMD_PW)))
+            str('{0} {1} useradd -u 59999 -c \"test user gecos\" -m  -s /bin/bash -n testuserx1234'.format(sudo_check(),
+                                                                                                           BSD_CMD_PW)))
     assert execute_command(command=command)
 
 

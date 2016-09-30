@@ -13,18 +13,17 @@ from creds.constants import (UID_MAX, UID_MIN,
                              BSD_CMD_PW)
 from creds.ssh import PublicKey
 from creds.ssh import read_authorized_keys
-from creds.utils import (get_platform, check_platform, sudo_check)
+from creds.utils import (get_platform, check_platform, sudo_check, read_sudoers, get_sudoers_entry)
 from external.six import text_type
 
 PLATFORM = get_platform()
 
 
 class User(object):
-
     """Representation of a user and their related credentials."""
 
     def __init__(self, name=None, passwd=None, uid=None, gid=None, gecos=None,
-                 home_dir=None, shell=None, public_keys=None):
+                 home_dir=None, shell=None, public_keys=None, sudoers_entry=None):
         """Make a user.
 
         args:
@@ -36,6 +35,7 @@ class User(object):
             home_dir (str): home directory
             shell (str): shell
             public_keys (list): list of public key instances
+            sudoers_entry (str): an entry in sudoers
         """
         check_platform()
         self.name = name
@@ -46,6 +46,7 @@ class User(object):
         self.home_dir = home_dir
         self.shell = shell
         self.public_keys = public_keys
+        self.sudoers_entry = sudoers_entry
 
     @property
     def gecos(self):
@@ -78,7 +79,6 @@ class User(object):
 
 
 class Users(MutableSequence):
-
     """A collection of users and methods to manage them."""
 
     def __init__(self, oktypes=User):
@@ -90,6 +90,7 @@ class Users(MutableSequence):
         check_platform()
         self.oktypes = oktypes
         self._user_list = list()
+        self.sudoers = read_sudoers()
 
     def check(self, value):
         """Check types."""
@@ -175,7 +176,7 @@ class Users(MutableSequence):
             return cls.construct_user_list(raw_users=users_json.get('users'))
 
     @staticmethod
-    def from_passwd(uid_min=None, uid_max=None):
+    def from_passwd(uid_min=None, uid_max=None, sudoers=None):
         """Create collection from locally discovered data, e.g. /etc/passwd."""
         import pwd
         users = Users(oktypes=User)
@@ -184,6 +185,7 @@ class Users(MutableSequence):
             uid_min = UID_MIN
         if not uid_max:
             uid_max = UID_MAX
+        sudoers_entries = read_sudoers()
         for pwd_entry in passwd_list:
             if uid_min <= pwd_entry.pw_uid <= uid_max:
                 user = User(name=text_type(pwd_entry.pw_name),
@@ -193,9 +195,11 @@ class Users(MutableSequence):
                             gecos=text_type(pwd_entry.pw_gecos),
                             home_dir=text_type(pwd_entry.pw_dir),
                             shell=text_type(pwd_entry.pw_shell),
-                            public_keys=read_authorized_keys(username=pwd_entry.pw_name))
+                            public_keys=read_authorized_keys(username=pwd_entry.pw_name),
+                            sudoers_entry=get_sudoers_entry(username=pwd_entry.pw_name, sudoers_entries=sudoers_entries))
                 users.append(user)
         return users
+
 
     @staticmethod
     def construct_user_list(raw_users=None):
@@ -216,14 +220,12 @@ class Users(MutableSequence):
                               public_keys=public_keys))
         return users
 
-
     def to_dict(self):
         """ Return a dict of the users. """
         users = dict(users=list())
         for user in self:
             users['users'].append(user.to_dict())
         return users
-
 
     def export(self, file_path=None, export_format=None):
         """ Write the users to a file. """
@@ -232,8 +234,9 @@ class Users(MutableSequence):
                 import yaml
                 yaml.safe_dump(self.to_dict(), export_file, default_flow_style=False)
             elif export_format == 'json':
-                    export_file.write(text_type(json.dumps(self.to_dict(), ensure_ascii=False)))
+                export_file.write(text_type(json.dumps(self.to_dict(), ensure_ascii=False)))
             return True
+
 
 def generate_add_user_command(proposed_user=None):
     """Generate command to add a user.
@@ -391,6 +394,10 @@ def compare_user(passed_user=None, user_list=None):
         comparison_result['shell_action'] = 'modify'
         comparison_result['current_shell_value'] = returned[0].shell
         comparison_result['replacement_shell_value'] = passed_user.shell
+    if passed_user.sudoers_entry and (not returned[0].sudoers_entry == passed_user.sudoers_entry):
+        comparison_result['sudoers_entry_action'] = 'modify'
+        comparison_result['current_sudoers_entry'] = returned[0].sudoers_entry
+        comparison_result['replacement_sudoers_entry'] = passed_user.sudoers_entry
     # if passed_user.public_keys and (not returned[0].public_keys == passed_user.public_keys):
     existing_keys = returned[0].public_keys
     passed_keys = passed_user.public_keys

@@ -113,3 +113,4 @@ def write_authorized_keys(user=None):
     execute_command(shlex.split(str('{0} chmod 700 {1}'.format(sudo_check(), authorized_keys_dir))))
     execute_command(shlex.split(str('{0} chmod 600 {1}'.format(sudo_check(), authorized_keys_path))))
     execute_command(shlex.split(str('{0} rm {1}'.format(sudo_check(), tmp_authorized_keys_path))))
+

@@ -6,7 +6,7 @@ from creds import constants
 from creds.ssh import write_authorized_keys
 from creds.users import (generate_add_user_command, generate_modify_user_command,
                          generate_delete_user_command, compare_user, get_user_by_uid)
-from creds.utils import execute_command
+from creds.utils import execute_command, write_sudoers_entry, remove_sudoers_entry
 from external.six import iteritems
 
 
@@ -73,11 +73,14 @@ def execute_plan(plan=None):
             command = generate_delete_user_command(username=task.get('username'))
             command_output = execute_command(command)
             execution_result.append(dict(task=task, command_output=command_output))
+            remove_sudoers_entry(username=task.get('username'))
         elif action == 'add':
             command = generate_add_user_command(task.get('proposed_user'))
             command_output = execute_command(command)
             if task['proposed_user'].public_keys:
                 write_authorized_keys(task['proposed_user'])
+            if task['proposed_user'].sudoers_entry:
+                write_sudoers_entry(username=task['proposed_user'].name, sudoers_entry=task['proposed_user'].sudoers_entry)
             execution_result.append(dict(task=task, command_output=command_output))
         elif action == 'update':
             result = task['user_comparison'].get('result')
@@ -89,9 +92,13 @@ def execute_plan(plan=None):
             command_output = None
             if action_count == 1 and 'public_keys_action' in result:
                 write_authorized_keys(task['proposed_user'])
+            elif action_count == 1 and 'sudoers_entry_action' in result:
+                write_sudoers_entry(username=task['proposed_user'].name, sudoers_entry=task['user_comparison']['result']['replacement_sudoers_entry'])
             else:
                 command = generate_modify_user_command(task=task)
                 command_output = execute_command(command)
                 if result.get('public_keys_action'):
                     write_authorized_keys(task['proposed_user'])
+                if result.get('sudoers_entry_action'):
+                    write_sudoers_entry(username=task['proposed_user'].name, sudoers_entry=task['user_comparison']['result']['replacement_sudoers_entry'])
             execution_result.append(dict(task=task, command_output=command_output))
