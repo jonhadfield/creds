@@ -32,7 +32,7 @@ def get_platform():
 def check_platform():
     """Return an error if this is being used on unsupported platform."""
     if not platform.system() in SUPPORTED_PLATFORMS:
-        sys.exit('Linux and FreeBSD are currently the only supported platform for this library.')
+        sys.exit('Linux and FreeBSD are currently the only supported platforms for this library.')
 
 
 def execute_command(command=None):
