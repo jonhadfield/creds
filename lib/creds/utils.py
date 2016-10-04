@@ -12,7 +12,7 @@ import string
 import subprocess
 import sys
 
-from creds.constants import (SUPPORTED_PLATFORMS, CMD_SUDO)
+from creds.constants import (SUPPORTED_PLATFORMS, CMD_SUDO, RANDOM_FILE_EXT_LENGTH)
 from external.six import (PY2, PY3, text_type)
 
 
@@ -41,7 +41,7 @@ def execute_command(command=None):
     return process.communicate()
 
 
-def random_string(length=10):
+def random_string(length=None):
     """Generate a random string of ASCII characters."""
     return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                    for _ in range(length))
@@ -82,7 +82,7 @@ def read_sudoers():
         str: sudoers entry for the specified user.
     """
     sudoers_path = '/etc/sudoers'
-    rnd_chars = random_string()
+    rnd_chars = random_string(length=RANDOM_FILE_EXT_LENGTH)
     tmp_sudoers_path = '/tmp/sudoers_{0}'.format(rnd_chars)
     sudoers_entries = list()
     copy_result = execute_command(
@@ -110,7 +110,7 @@ def write_sudoers_entry(username=None, sudoers_entry=None):
     """
 
     sudoers_path = '/etc/sudoers'
-    rnd_chars = random_string()
+    rnd_chars = random_string(length=RANDOM_FILE_EXT_LENGTH)
     tmp_sudoers_path = '/tmp/sudoers_{0}'.format(rnd_chars)
     execute_command(
         shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), sudoers_path, tmp_sudoers_path))))
@@ -144,7 +144,7 @@ def remove_sudoers_entry(username=None):
         str: sudoers entry for the specified user.
     """
     sudoers_path = '/etc/sudoers'
-    rnd_chars = random_string()
+    rnd_chars = random_string(length=RANDOM_FILE_EXT_LENGTH)
     tmp_sudoers_path = '/tmp/sudoers_{0}'.format(rnd_chars)
     execute_command(
         shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), sudoers_path, tmp_sudoers_path))))

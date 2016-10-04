@@ -5,6 +5,7 @@ from __future__ import (unicode_literals, print_function)
 import os
 import shlex
 
+from creds.constants import RANDOM_FILE_EXT_LENGTH
 from creds.utils import base64decode, base64encode
 from creds.utils import execute_command, random_string, sudo_check
 from external.six import text_type
@@ -69,7 +70,7 @@ def read_authorized_keys(username=None):
         list: Authorised keys for the specified user.
     """
     authorized_keys_path = '{0}/.ssh/authorized_keys'.format(os.path.expanduser('~{0}'.format(username)))
-    rnd_chars = random_string()
+    rnd_chars = random_string(length=RANDOM_FILE_EXT_LENGTH)
     tmp_authorized_keys_path = '/tmp/authorized_keys_{0}_{1}'.format(username, rnd_chars)
     authorized_keys = list()
     copy_result = execute_command(
@@ -97,7 +98,7 @@ def write_authorized_keys(user=None):
     """
     authorized_keys = list()
     authorized_keys_dir = '{0}/.ssh'.format(os.path.expanduser('~{0}'.format(user.name)))
-    rnd_chars = random_string()
+    rnd_chars = random_string(length=RANDOM_FILE_EXT_LENGTH)
     authorized_keys_path = '{0}/authorized_keys'.format(authorized_keys_dir)
     tmp_authorized_keys_path = '/tmp/authorized_keys_{0}_{1}'.format(user.name, rnd_chars)
 

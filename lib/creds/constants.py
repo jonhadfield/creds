@@ -10,6 +10,8 @@ from external.six import (text_type, PY2, PY3)
 
 SUPPORTED_PLATFORMS = ['Linux', 'FreeBSD', 'OpenBSD']
 
+RANDOM_FILE_EXT_LENGTH = 20  # Number of random characters to add to transient file names
+
 PURGE_UNDEFINED = False  # Purge any users that fall between UID_MIN and UID_MAX that are not defined
 
 DEFAULT_UID_MIN = 1000  # The lowest uid to consider safe to manage
