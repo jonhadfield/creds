@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
-"""This module contains the classes for User (a user's details) and Users (a collection of User)."""
+"""This module contains the classes for User (a user's details) and Users (a collection of User instances)."""
 from __future__ import unicode_literals
 
 import io
 import json
 import os
 import shlex
+import sys
 from collections import MutableSequence
-
-from creds.constants import (UID_MAX, UID_MIN,
+from creds.constants import (SUPPORTED_PLATFORMS, UID_MAX, UID_MIN,
                              LINUX_CMD_USERADD, LINUX_CMD_USERDEL, LINUX_CMD_USERMOD,
-                             BSD_CMD_PW)
+                             FREEBSD_CMD_PW)
 from creds.ssh import PublicKey
 from creds.ssh import read_authorized_keys
-from creds.utils import (get_platform, check_platform, sudo_check, read_sudoers, get_sudoers_entry)
+from creds.utils import (get_platform, sudo_check, read_sudoers, get_sudoers_entry, get_missing_commands)
 from external.six import text_type
-
-PLATFORM = get_platform()
 
 
 class User(object):
@@ -37,7 +35,6 @@ class User(object):
             public_keys (list): list of public key instances
             sudoers_entry (str): an entry in sudoers
         """
-        check_platform()
         self.name = name
         self.passwd = passwd
         self.uid = uid
@@ -87,7 +84,15 @@ class Users(MutableSequence):
         args:
             oktypes (type): The acceptable types of instances..
         """
-        check_platform()
+        platform = get_platform()
+        # Check platform is supported
+        if not platform in SUPPORTED_PLATFORMS:
+            sys.exit('Linux, FreeBSD and OpenBSD are currently the only supported platforms for this library.')
+        # Check OS commands are available for managing users
+        missing_commands = get_missing_commands(platform)
+        if missing_commands:
+            sys.exit('Unable to find commands: {0}.\nPlease check PATH.'.format(', '.join(missing_commands)))
+
         self.oktypes = oktypes
         self._user_list = list()
         self.sudoers = read_sudoers()
@@ -176,7 +181,7 @@ class Users(MutableSequence):
             return cls.construct_user_list(raw_users=users_json.get('users'))
 
     @staticmethod
-    def from_passwd(uid_min=None, uid_max=None, sudoers=None):
+    def from_passwd(uid_min=None, uid_max=None):
         """Create collection from locally discovered data, e.g. /etc/passwd."""
         import pwd
         users = Users(oktypes=User)
@@ -250,7 +255,7 @@ def generate_add_user_command(proposed_user=None):
         list: The command string split into shell-like syntax
     """
     command = None
-    if PLATFORM in ('Linux', 'OpenBSD'):
+    if get_platform() in ('Linux', 'OpenBSD'):
         command = '{0} {1}'.format(sudo_check(), LINUX_CMD_USERADD)
         if proposed_user.uid:
             command = '{0} -u {1}'.format(command, proposed_user.uid)
@@ -266,8 +271,8 @@ def generate_add_user_command(proposed_user=None):
         if proposed_user.shell:
             command = '{0} -s {1}'.format(command, proposed_user.shell)
         command = '{0} {1}'.format(command, proposed_user.name)
-    elif PLATFORM == 'FreeBSD':  # pragma: FreeBSD
-        command = '{0} {1} useradd'.format(sudo_check(), BSD_CMD_PW)
+    elif get_platform() == 'FreeBSD':  # pragma: FreeBSD
+        command = '{0} {1} useradd'.format(sudo_check(), FREEBSD_CMD_PW)
         if proposed_user.uid:
             command = '{0} -u {1}'.format(command, proposed_user.uid)
         if proposed_user.gid:
@@ -298,7 +303,7 @@ def generate_modify_user_command(task=None):
     name = task['proposed_user'].name
     comparison_result = task['user_comparison']['result']
     command = None
-    if PLATFORM in ('Linux', 'OpenBSD'):
+    if get_platform() in ('Linux', 'OpenBSD'):
         command = '{0} {1}'.format(sudo_check(), LINUX_CMD_USERMOD)
         if comparison_result.get('replacement_uid_value'):
             command = '{0} -u {1}'.format(command, comparison_result.get('replacement_uid_value'))
@@ -311,8 +316,8 @@ def generate_modify_user_command(task=None):
         if comparison_result.get('replacement_home_dir_value'):
             command = '{0} -d {1}'.format(command, comparison_result.get('replacement_home_dir_value'))
         command = '{0} {1}'.format(command, name)
-    if PLATFORM == 'FreeBSD':  # pragma: FreeBSD
-        command = '{0} {1} usermod'.format(sudo_check(), BSD_CMD_PW)
+    if get_platform() == 'FreeBSD':  # pragma: FreeBSD
+        command = '{0} {1} usermod'.format(sudo_check(), FREEBSD_CMD_PW)
         if comparison_result.get('replacement_uid_value'):
             command = '{0} -u {1}'.format(command, comparison_result.get('replacement_uid_value'))
         if comparison_result.get('replacement_gid_value'):
@@ -338,10 +343,10 @@ def generate_delete_user_command(username=None):
         list: The user delete command string split into shell-like syntax
     """
     command = None
-    if PLATFORM in ('Linux', 'OpenBSD'):
+    if get_platform() in ('Linux', 'OpenBSD'):
         command = '{0} {1} -r {2}'.format(sudo_check(), LINUX_CMD_USERDEL, username)
-    elif PLATFORM == 'FreeBSD':  # pragma: FreeBSD
-        command = '{0} {1} userdel -r -n {2}'.format(sudo_check(), BSD_CMD_PW, username)
+    elif get_platform() == 'FreeBSD':  # pragma: FreeBSD
+        command = '{0} {1} userdel -r -n {2}'.format(sudo_check(), FREEBSD_CMD_PW, username)
     if command:
         return shlex.split(str(command))
 

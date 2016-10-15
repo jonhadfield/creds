@@ -212,14 +212,7 @@ def test_user_instance_with_missing_gecos():
 def test_platform_detection(monkeypatch):
     monkeypatch.setattr("platform.system", lambda: 'Darwin')
     with pytest.raises(SystemExit):
-        name = 'Fred'
-        uid = 1024
-        gid = 1024
-        gecos = 'Fred Bloggs'
-        home_dir = '/home/fred'
-        shell = '/bin/false'
-        public_key = PublicKey(raw=PUBLIC_KEYS[0]['raw'])
-        User(name=name, uid=uid, gid=gid, gecos=gecos, home_dir=home_dir, shell=shell, public_keys=[public_key])
+        Users()
 
 
 def test_user_detection(monkeypatch):

@@ -10,9 +10,9 @@ import random
 import shlex
 import string
 import subprocess
-import sys
 
-from creds.constants import (SUPPORTED_PLATFORMS, CMD_SUDO, RANDOM_FILE_EXT_LENGTH)
+from creds.constants import (CMD_SUDO, RANDOM_FILE_EXT_LENGTH, LINUX_CMD_GROUP_ADD, LINUX_CMD_GROUP_DEL,
+                             LINUX_CMD_USERADD, LINUX_CMD_USERDEL, LINUX_CMD_USERMOD, FREEBSD_CMD_PW)
 from external.six import (PY2, PY3, text_type)
 
 
@@ -29,10 +29,28 @@ def get_platform():
     return platform.system()
 
 
-def check_platform():
-    """Return an error if this is being used on unsupported platform."""
-    if not platform.system() in SUPPORTED_PLATFORMS:
-        sys.exit('Linux and FreeBSD are currently the only supported platforms for this library.')
+def get_missing_commands(_platform):
+    """Check I can identify the necessary commands for managing users."""
+    missing = list()
+    # print(os.environ['PATH'])
+    if _platform in ('Linux', 'OpenBSD'):
+        if not LINUX_CMD_USERADD:
+            missing.append('useradd')
+        if not LINUX_CMD_USERMOD:
+            missing.append('usermod')
+        if not LINUX_CMD_USERDEL:
+            missing.append('userdel')
+        if not LINUX_CMD_GROUP_ADD:
+            missing.append('groupadd')
+        if not LINUX_CMD_GROUP_DEL:
+            missing.append('groupdel')
+    elif _platform == 'FreeBSD':
+        # FREEBSD COMMANDS
+        if not FREEBSD_CMD_PW:
+            missing.append('pw')
+    if missing:
+        print('\nMISSING = {0}'.format(missing))
+    return missing
 
 
 def execute_command(command=None):
@@ -163,7 +181,6 @@ def remove_sudoers_entry(username=None):
     execute_command(shlex.split(str('{0} chown root:root {1}'.format(sudo_check(), sudoers_path))))
     execute_command(shlex.split(str('{0} chmod 440 {1}'.format(sudo_check(), sudoers_path))))
     execute_command(shlex.split(str('{0} rm {1}'.format(sudo_check(), tmp_sudoers_path))))
-
 
 
 def get_sudoers_entry(username=None, sudoers_entries=None):

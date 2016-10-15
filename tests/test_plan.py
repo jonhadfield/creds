@@ -6,7 +6,7 @@ import getpass
 import shlex
 
 from creds.constants import (LINUX_CMD_USERADD, LINUX_CMD_USERDEL,
-                             LINUX_CMD_GROUP_ADD, BSD_CMD_PW)
+                             LINUX_CMD_GROUP_ADD, FREEBSD_CMD_PW)
 from creds.plan import (create_plan, execute_plan)
 from creds.ssh import PublicKey
 from creds.users import (Users, User)
@@ -251,7 +251,7 @@ def delete_test_user_and_group():
         del_user_command = shlex.split(str('{0} {1} -r testuserx1234'.format(sudo_check(), LINUX_CMD_USERDEL)))
         execute_command(command=del_user_command)
     elif PLATFORM == 'FreeBSD':
-        del_user_command = shlex.split(str('{0} {1} userdel -r -n testuserx1234'.format(sudo_check(), BSD_CMD_PW)))
+        del_user_command = shlex.split(str('{0} {1} userdel -r -n testuserx1234'.format(sudo_check(), FREEBSD_CMD_PW)))
         execute_command(command=del_user_command)
     if PLATFORM in ('Linux', 'OpenBSD'):
         del_group_command = shlex.split(str('{0} {1} testuserx1234'.format(sudo_check(), GROUPDEL)))
@@ -270,7 +270,7 @@ def create_test_user():
     elif PLATFORM == 'FreeBSD':
         command = shlex.split(
             str('{0} {1} useradd -u 59999 -c \"test user gecos\" -m  -s /bin/bash -n testuserx1234'.format(sudo_check(),
-                                                                                                           BSD_CMD_PW)))
+                                                                                                           FREEBSD_CMD_PW)))
     assert execute_command(command=command)
 
 
@@ -280,5 +280,5 @@ def create_test_group():
             str('{0} {1} -g 59999 testuserx1234'.format(sudo_check(), LINUX_CMD_GROUP_ADD)))
     elif PLATFORM == 'FreeBSD':
         command = shlex.split(
-            str('{0} {1} groupadd -g 59999 -n testuserx1234'.format(sudo_check(), BSD_CMD_PW)))
+            str('{0} {1} groupadd -g 59999 -n testuserx1234'.format(sudo_check(), FREEBSD_CMD_PW)))
     assert execute_command(command=command)
