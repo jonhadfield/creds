@@ -95,7 +95,6 @@ class Users(MutableSequence):
 
         self.oktypes = oktypes
         self._user_list = list()
-        self.sudoers = read_sudoers()
 
     def check(self, value):
         """Check types."""
