@@ -139,12 +139,8 @@ class Users(MutableSequence):
         """Return a list of users matching a filter (if provided)."""
         user_list = Users(oktypes=User)
         for user in self._user_list:
-            if users_filter:
-                if users_filter.get('name') == user.name or users_filter.get('uid') == user.uid:
-                    public_keys = read_authorized_keys(username=user.name)
-                    if public_keys:
-                        user.public_keys = public_keys
-                    user_list.append(user)
+            if users_filter and (users_filter.get('name') == user.name or users_filter.get('uid') == user.uid):
+                user_list.append(user)
         return user_list
 
     @classmethod
