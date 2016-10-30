@@ -9,7 +9,6 @@ python:
   - "2.6"
   - "pypy"
   - "pypy3"
-  - "nightly"
 install:
   - pip install coveralls
   - pip install tox-travis
