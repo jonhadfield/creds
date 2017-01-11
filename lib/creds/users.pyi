@@ -69,7 +69,7 @@ class Users(Generic[T]):
     def construct_user_list(raw_users: dict) -> Generic[T]: pass
 
 
-def generate_add_user_command(proposed_user: User) -> List[str]: pass
+def generate_add_user_command(proposed_user: User, manage_home: bool) -> List[str]: pass
 
 
 def generate_modify_user_command(task: dict) -> List[str]: pass

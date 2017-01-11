@@ -240,11 +240,12 @@ class Users(MutableSequence):
             return True
 
 
-def generate_add_user_command(proposed_user=None):
+def generate_add_user_command(proposed_user=None, manage_home=None):
     """Generate command to add a user.
 
     args:
         proposed_user (User): User
+        manage_home: bool
 
     returns:
         list: The command string split into shell-like syntax
@@ -258,11 +259,12 @@ def generate_add_user_command(proposed_user=None):
             command = '{0} -g {1}'.format(command, proposed_user.gid)
         if proposed_user.gecos:
             command = '{0} -c \'{1}\''.format(command, proposed_user.gecos)
-        if proposed_user.home_dir:
-            if os.path.exists(proposed_user.home_dir):
-                command = '{0} -d {1}'.format(command, proposed_user.home_dir)
-        elif not os.path.exists('/home/{0}'.format(proposed_user.name)):
-            command = '{0} -m'.format(command)
+        if manage_home:
+            if proposed_user.home_dir:
+                if os.path.exists(proposed_user.home_dir):
+                    command = '{0} -d {1}'.format(command, proposed_user.home_dir)
+            elif not os.path.exists('/home/{0}'.format(proposed_user.name)):
+                command = '{0} -m'.format(command)
         if proposed_user.shell:
             command = '{0} -s {1}'.format(command, proposed_user.shell)
         command = '{0} {1}'.format(command, proposed_user.name)
@@ -274,10 +276,11 @@ def generate_add_user_command(proposed_user=None):
             command = '{0} -g {1}'.format(command, proposed_user.gid)
         if proposed_user.gecos:
             command = '{0} -c \'{1}\''.format(command, proposed_user.gecos)
-        if proposed_user.home_dir:
-            command = '{0} -d {1}'.format(command, proposed_user.home_dir)
-        else:
-            command = '{0} -m'.format(command)
+        if manage_home:
+            if proposed_user.home_dir:
+                command = '{0} -d {1}'.format(command, proposed_user.home_dir)
+            else:
+                command = '{0} -m'.format(command)
         if proposed_user.shell:
             command = '{0} -s {1}'.format(command, proposed_user.shell)
         command = '{0} -n {1}'.format(command, proposed_user.name)
@@ -286,7 +289,7 @@ def generate_add_user_command(proposed_user=None):
         return shlex.split(str(command))
 
 
-def generate_modify_user_command(task=None):
+def generate_modify_user_command(task=None, manage_home=None):
     """Generate command to modify existing user to become the proposed user.
 
     args:
@@ -308,8 +311,8 @@ def generate_modify_user_command(task=None):
             command = '{0} -c {1}'.format(command, comparison_result.get('replacement_gecos_value'))
         if comparison_result.get('replacement_shell_value'):
             command = '{0} -s {1}'.format(command, comparison_result.get('replacement_shell_value'))
-        if comparison_result.get('replacement_home_dir_value'):
-            command = '{0} -d {1}'.format(command, comparison_result.get('replacement_home_dir_value'))
+        if manage_home and comparison_result.get('replacement_home_dir_value'):
+                command = '{0} -d {1}'.format(command, comparison_result.get('replacement_home_dir_value'))
         command = '{0} {1}'.format(command, name)
     if get_platform() == 'FreeBSD':  # pragma: FreeBSD
         command = '{0} {1} usermod'.format(sudo_check(), FREEBSD_CMD_PW)
@@ -321,27 +324,30 @@ def generate_modify_user_command(task=None):
             command = '{0} -c {1}'.format(command, comparison_result.get('replacement_gecos_value'))
         if comparison_result.get('replacement_shell_value'):
             command = '{0} -s {1}'.format(command, comparison_result.get('replacement_shell_value'))
-        if comparison_result.get('replacement_home_dir_value'):
+        if manage_home and comparison_result.get('replacement_home_dir_value'):
             command = '{0} -d {1}'.format(command, comparison_result.get('replacement_home_dir_value'))
         command = '{0} -n {1}'.format(command, name)
     if command:
         return shlex.split(str(command))
 
 
-def generate_delete_user_command(username=None):
+def generate_delete_user_command(username=None, manage_home=None):
     """Generate command to delete a user.
 
     args:
         username (str): user name
+        manage_home (bool): manage home directory
 
     returns:
         list: The user delete command string split into shell-like syntax
     """
     command = None
+    remove_home = '-r' if manage_home else ''
+
     if get_platform() in ('Linux', 'OpenBSD'):
-        command = '{0} {1} -r {2}'.format(sudo_check(), LINUX_CMD_USERDEL, username)
+        command = '{0} {1} {2} {3}'.format(sudo_check(), LINUX_CMD_USERDEL, remove_home, username)
     elif get_platform() == 'FreeBSD':  # pragma: FreeBSD
-        command = '{0} {1} userdel -r -n {2}'.format(sudo_check(), FREEBSD_CMD_PW, username)
+        command = '{0} {1} userdel {2} -n {3}'.format(sudo_check(), FREEBSD_CMD_PW, remove_home, username)
     if command:
         return shlex.split(str(command))
 

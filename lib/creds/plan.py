@@ -11,7 +11,7 @@ from external.six import iteritems
 
 
 def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, protected_users=None,
-                allow_non_unique_id=None):
+                allow_non_unique_id=None, manage_home=True, manage_keys=True):
     """Determine what changes are required.
 
     args:
@@ -20,6 +20,8 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
         purge_undefined (bool): Remove discovered users that have not been defined in proposed users list
         protected_users (list): List of users' names that should not be evaluated as part of the plan creation process
         allow_non_unique_id (bool): Allow more than one user to have the same uid
+        manage_home (bool): Create/remove users' home directories
+        manage_keys (bool): Add/update/remove users' keys
 
     returns:
        list: Differences between discovered and proposed users with a
@@ -46,21 +48,25 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
             plan.append(
                 dict(action='fail', error='uid_clash', proposed_user=proposed_user, state='existing', result=None))
         elif not user_matching_name:
-            plan.append(dict(action='add', proposed_user=proposed_user, state='missing', result=None))
+            plan.append(
+                dict(action='add', proposed_user=proposed_user, state='missing', result=None, manage_home=manage_home,
+                     manage_keys=manage_keys))
         # If they do, then compare
         else:
             user_comparison = compare_user(passed_user=proposed_user, user_list=existing_users)
             if user_comparison.get('result'):
                 plan.append(
                     dict(action='update', proposed_user=proposed_user, state='existing',
-                         user_comparison=user_comparison))
+                         user_comparison=user_comparison, manage_home=manage_home, manage_keys=manage_keys))
     # Application of the proposed user list will not result in deletion of users that need to be removed
     # If 'PURGE_UNDEFINED' then look for existing users that are not defined in proposed usernames and mark for removal
     if purge_undefined:
         for existing_user in existing_users:
             if existing_user.name not in proposed_usernames:
                 if existing_user.name not in protected_users:
-                    plan.append(dict(action='delete', username=existing_user.name, state='existing'))
+                    plan.append(
+                        dict(action='delete', username=existing_user.name, state='existing', manage_home=manage_home,
+                             manage_keys=manage_keys))
     return plan
 
 
@@ -70,17 +76,18 @@ def execute_plan(plan=None):
     for task in plan:
         action = task['action']
         if action == 'delete':
-            command = generate_delete_user_command(username=task.get('username'))
+            command = generate_delete_user_command(username=task.get('username'), manage_home=task['manage_home'])
             command_output = execute_command(command)
             execution_result.append(dict(task=task, command_output=command_output))
             remove_sudoers_entry(username=task.get('username'))
         elif action == 'add':
-            command = generate_add_user_command(task.get('proposed_user'))
+            command = generate_add_user_command(proposed_user=task.get('proposed_user'), manage_home=task['manage_home'])
             command_output = execute_command(command)
-            if task['proposed_user'].public_keys:
+            if task['proposed_user'].public_keys and task['manage_keys']:
                 write_authorized_keys(task['proposed_user'])
             if task['proposed_user'].sudoers_entry:
-                write_sudoers_entry(username=task['proposed_user'].name, sudoers_entry=task['proposed_user'].sudoers_entry)
+                write_sudoers_entry(username=task['proposed_user'].name,
+                                    sudoers_entry=task['proposed_user'].sudoers_entry)
             execution_result.append(dict(task=task, command_output=command_output))
         elif action == 'update':
             result = task['user_comparison'].get('result')
@@ -90,15 +97,17 @@ def execute_plan(plan=None):
                 if '_action' in k:
                     action_count += 1
             command_output = None
-            if action_count == 1 and 'public_keys_action' in result:
+            if task['manage_keys'] and action_count == 1 and 'public_keys_action' in result:
                 write_authorized_keys(task['proposed_user'])
             elif action_count == 1 and 'sudoers_entry_action' in result:
-                write_sudoers_entry(username=task['proposed_user'].name, sudoers_entry=task['user_comparison']['result']['replacement_sudoers_entry'])
+                write_sudoers_entry(username=task['proposed_user'].name,
+                                    sudoers_entry=task['user_comparison']['result']['replacement_sudoers_entry'])
             else:
                 command = generate_modify_user_command(task=task)
                 command_output = execute_command(command)
-                if result.get('public_keys_action'):
+                if task['manage_keys'] and result.get('public_keys_action'):
                     write_authorized_keys(task['proposed_user'])
                 if result.get('sudoers_entry_action'):
-                    write_sudoers_entry(username=task['proposed_user'].name, sudoers_entry=task['user_comparison']['result']['replacement_sudoers_entry'])
+                    write_sudoers_entry(username=task['proposed_user'].name,
+                                        sudoers_entry=task['user_comparison']['result']['replacement_sudoers_entry'])
             execution_result.append(dict(task=task, command_output=command_output))
