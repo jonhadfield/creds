@@ -21,7 +21,7 @@ def create_plan(existing_users=None, proposed_users=None, purge_undefined=None, 
         protected_users (list): List of users' names that should not be evaluated as part of the plan creation process
         allow_non_unique_id (bool): Allow more than one user to have the same uid
         manage_home (bool): Create/remove users' home directories
-        manage_keys (bool): Add/update/remove users' keys
+        manage_keys (bool): Add/update/remove users' keys (manage_home must also be true)
 
     returns:
        list: Differences between discovered and proposed users with a
@@ -83,7 +83,7 @@ def execute_plan(plan=None):
         elif action == 'add':
             command = generate_add_user_command(proposed_user=task.get('proposed_user'), manage_home=task['manage_home'])
             command_output = execute_command(command)
-            if task['proposed_user'].public_keys and task['manage_keys']:
+            if task['proposed_user'].public_keys and task['manage_home'] and task['manage_keys']:
                 write_authorized_keys(task['proposed_user'])
             if task['proposed_user'].sudoers_entry:
                 write_sudoers_entry(username=task['proposed_user'].name,
@@ -97,7 +97,7 @@ def execute_plan(plan=None):
                 if '_action' in k:
                     action_count += 1
             command_output = None
-            if task['manage_keys'] and action_count == 1 and 'public_keys_action' in result:
+            if task['manage_home'] and task['manage_keys'] and action_count == 1 and 'public_keys_action' in result:
                 write_authorized_keys(task['proposed_user'])
             elif action_count == 1 and 'sudoers_entry_action' in result:
                 write_sudoers_entry(username=task['proposed_user'].name,
@@ -105,7 +105,7 @@ def execute_plan(plan=None):
             else:
                 command = generate_modify_user_command(task=task)
                 command_output = execute_command(command)
-                if task['manage_keys'] and result.get('public_keys_action'):
+                if task['manage_home'] and task['manage_keys'] and result.get('public_keys_action'):
                     write_authorized_keys(task['proposed_user'])
                 if result.get('sudoers_entry_action'):
                     write_sudoers_entry(username=task['proposed_user'].name,

@@ -3,6 +3,7 @@
 from __future__ import (absolute_import, unicode_literals)
 
 import getpass
+import os
 import shlex
 
 from creds.constants import (LINUX_CMD_USERADD, LINUX_CMD_USERDEL,
@@ -24,6 +25,82 @@ GROUPDEL = '/usr/sbin/groupdel'
 PLATFORM = get_platform()
 
 CURRENT_USER = getpass.getuser()
+
+
+def test_execute_plan_to_delete_user_ignoring_home():
+    """ Delete a user and ensure their home dir is untouched """
+
+    delete_test_user_and_group()
+    pre_users = Users.from_passwd()
+    create_test_user()
+    plan = create_plan(existing_users=Users.from_passwd(), proposed_users=pre_users, purge_undefined=True,
+                       manage_home=False,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
+    execute_plan(plan=plan)
+    updated_users = Users.from_passwd()
+    print(updated_users)
+    updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
+    assert len(updated_user) == 0
+    assert os.path.exists('/home/testuserx1234')
+    delete_test_user_and_group()
+
+
+def test_execute_plan_to_create_user_ignoring_home():
+    """ Create a new user without creating home directory """
+
+    delete_test_user_and_group()
+    raw_public_key_2 = PUBLIC_KEYS[1].get('raw')
+    public_key_2 = PublicKey(raw=raw_public_key_2)
+    current_users = Users.from_passwd()
+    provided_users = Users()
+    provided_users.append(
+        User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
+             shell='/bin/false', public_keys=[public_key_2], sudoers_entry='ALL=(ALL:ALL) ALL'))
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, manage_home=False,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
+    assert plan[0]['proposed_user'].gecos == '\"test user gecos update\"'
+    execute_plan(plan=plan)
+    updated_users = Users.from_passwd()
+    updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
+    assert len(updated_user) == 1
+    assert updated_user[0].name == 'testuserx1234'
+    assert updated_user[0].uid == 59998
+    assert updated_user[0].gid == 1
+    assert updated_user[0].gecos == '\"test user gecos update\"'
+    assert updated_user[0].shell == '/bin/false'
+    assert not updated_user[0].public_keys
+    assert updated_user[0].sudoers_entry == 'ALL=(ALL:ALL) ALL'
+    assert not os.path.exists('/home/testuserx1234')
+    delete_test_user_and_group()
+
+
+def test_execute_plan_to_update_existing_user_ignoring_keys():
+    """ Create a new user without touching keys """
+
+    delete_test_user_and_group()
+    create_test_user()
+    raw_public_key_2 = PUBLIC_KEYS[1].get('raw')
+    public_key_2 = PublicKey(raw=raw_public_key_2)
+    current_users = Users.from_passwd()
+    provided_users = Users()
+    provided_users.append(
+        User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
+             shell='/bin/false', public_keys=[public_key_2], sudoers_entry='ALL=(ALL:ALL) ALL'))
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, manage_keys=False,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
+    assert plan[0]['proposed_user'].gecos == '\"test user gecos update\"'
+    execute_plan(plan=plan)
+    updated_users = Users.from_passwd()
+    updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
+    assert len(updated_user) == 1
+    assert updated_user[0].name == 'testuserx1234'
+    assert updated_user[0].uid == 59998
+    assert updated_user[0].gid == 1
+    assert updated_user[0].gecos == '\"test user gecos update\"'
+    assert updated_user[0].shell == '/bin/false'
+    assert not updated_user[0].public_keys
+    assert updated_user[0].sudoers_entry == 'ALL=(ALL:ALL) ALL'
+    delete_test_user_and_group()
 
 
 def test_execute_plan_to_update_existing_user():
