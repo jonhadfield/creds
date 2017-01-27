@@ -4,6 +4,11 @@ Change Log
 
 This lists the changes made with each release.
 
+`1.0.14`_ (2017-01-27)
+----------------------
+
+* Validate sudoers update using visudo to prevent corruption.
+
 
 `1.0.13`_ (2017-01-13)
 ----------------------
