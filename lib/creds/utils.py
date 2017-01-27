@@ -55,7 +55,7 @@ def get_missing_commands(_platform):
 def execute_command(command=None):
     """Execute a command and return the stdout and stderr."""
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    return process.communicate()
+    return process.communicate(), process.returncode
 
 
 def random_string(length=None):
@@ -104,7 +104,7 @@ def read_sudoers():
     sudoers_entries = list()
     copy_result = execute_command(
         shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), sudoers_path, tmp_sudoers_path))))
-    result_message = copy_result[1].decode('UTF-8')
+    result_message = copy_result[0][1].decode('UTF-8')
     if 'No such file or directory' not in result_message:
         execute_command(shlex.split(str('{0} chmod 755 {1}'.format(sudo_check(), tmp_sudoers_path))))
         with open(tmp_sudoers_path) as tmp_sudoers_file:
