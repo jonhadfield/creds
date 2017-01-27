@@ -144,6 +144,10 @@ def write_sudoers_entry(username=None, sudoers_entry=None):
         sudoers_output.append('\n')
     with open(tmp_sudoers_path, mode=text_type('w+')) as tmp_sudoers_file:
         tmp_sudoers_file.writelines(sudoers_output)
+    sudoers_check_result = execute_command(
+        shlex.split(str('{0} {1} -cf {2}'.format(sudo_check(), LINUX_CMD_VISUDO, tmp_sudoers_path))))
+    if sudoers_check_result[1] > 0:
+        raise ValueError(sudoers_check_result[0][1])
     execute_command(
         shlex.split(str('{0} cp {1} {2}'.format(sudo_check(), tmp_sudoers_path, sudoers_path))))
     execute_command(shlex.split(str('{0} chown root:root {1}'.format(sudo_check(), sudoers_path))))

@@ -14,6 +14,7 @@ from creds.users import (Users, User)
 from creds.utils import (execute_command, sudo_check, get_platform, remove_sudoers_entry)
 from external.six import text_type
 from .sample_data import PUBLIC_KEYS
+import pytest
 
 # TODO: Detect based on OS
 USERMOD = '/usr/sbin/usermod'
@@ -27,6 +28,24 @@ PLATFORM = get_platform()
 CURRENT_USER = getpass.getuser()
 
 
+def test_execute_plan_to_create_user_with_invalid_sudoers_entry():
+    """ Create a new user but specify an invalid sudoers entry """
+    delete_test_user_and_group()
+    raw_public_key_2 = PUBLIC_KEYS[1].get('raw')
+    public_key_2 = PublicKey(raw=raw_public_key_2)
+    current_users = Users.from_passwd()
+    provided_users = Users()
+    provided_users.append(
+        User(name='testuserx1234', uid=59998, gid=1, gecos='test user gecos update',
+             shell='/bin/false', public_keys=[public_key_2], sudoers_entry='INVALID ALL=(ALL:ALL) ALL'))
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, manage_home=False,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
+    assert plan[0]['proposed_user'].gecos == '\"test user gecos update\"'
+    with pytest.raises(ValueError):
+        execute_plan(plan=plan)
+    delete_test_user_and_group()
+
+
 def test_execute_plan_to_delete_user_ignoring_home():
     """ Delete a user and ensure their home dir is untouched """
 
@@ -35,10 +54,10 @@ def test_execute_plan_to_delete_user_ignoring_home():
     create_test_user()
     plan = create_plan(existing_users=Users.from_passwd(), proposed_users=pre_users, purge_undefined=True,
                        manage_home=False,
-                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant',
+                                        CURRENT_USER])
     execute_plan(plan=plan)
     updated_users = Users.from_passwd()
-    print(updated_users)
     updated_user = updated_users.describe_users(users_filter=dict(name='testuserx1234'))
     assert len(updated_user) == 0
     assert os.path.exists('/home/testuserx1234')
