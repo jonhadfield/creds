@@ -12,7 +12,7 @@ import string
 import subprocess
 
 from creds.constants import (CMD_SUDO, RANDOM_FILE_EXT_LENGTH, LINUX_CMD_GROUP_ADD, LINUX_CMD_GROUP_DEL,
-                             LINUX_CMD_USERADD, LINUX_CMD_USERDEL, LINUX_CMD_USERMOD, FREEBSD_CMD_PW)
+                             LINUX_CMD_USERADD, LINUX_CMD_USERDEL, LINUX_CMD_USERMOD, FREEBSD_CMD_PW, LINUX_CMD_VISUDO)
 from external.six import (PY2, PY3, text_type)
 
 

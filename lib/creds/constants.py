@@ -25,6 +25,7 @@ LINUX_CMD_USERMOD = spawn.find_executable("usermod")
 LINUX_CMD_USERDEL = spawn.find_executable("userdel")
 LINUX_CMD_GROUP_ADD = spawn.find_executable("groupadd")
 LINUX_CMD_GROUP_DEL = spawn.find_executable("groupdel")
+LINUX_CMD_VISUDO = spawn.find_executable("visudo")
 # FREEBSD COMMANDS
 FREEBSD_CMD_PW = spawn.find_executable("pw")
 
