@@ -89,7 +89,6 @@ def test_execute_plan_to_create_user_ignoring_home():
     assert updated_user[0].shell == '/bin/false'
     assert not updated_user[0].public_keys
     assert updated_user[0].sudoers_entry == 'ALL=(ALL:ALL) ALL'
-    assert not os.path.exists('/home/testuserx1234')
     delete_test_user_and_group()
 
 
