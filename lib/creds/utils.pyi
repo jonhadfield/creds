@@ -6,7 +6,10 @@ from typing import Tuple, List, Optional, Union
 def sudo_check() -> str: pass
 
 
-def check_platform() -> None: pass
+def get_platform() -> str: pass
+
+
+def get_missing_commands(_platform: str) -> List: pass
 
 
 def execute_command(command: List) -> Tuple: pass
