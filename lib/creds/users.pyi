@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from typing import List, Dict, AnyStr, Optional, Any, Type
+from typing import List, Dict, AnyStr, Optional, Any, Type, MutableSequence
 from typing import TypeVar, Generic
 
 from creds.ssh import PublicKey
@@ -30,7 +30,7 @@ T = TypeVar('T')
 U = TypeVar('U', bound=User)
 
 
-class Users(Generic[T]):
+class Users(MutableSequence[T]):
     def __init__(self, oktypes: Optional[Type[U]]) -> None:
         self._user_list = list()
         self.oktypes = oktypes
@@ -73,3 +73,9 @@ def generate_add_user_command(proposed_user: User, manage_home: bool) -> List[st
 
 
 def generate_modify_user_command(task: dict) -> List[str]: pass
+
+
+def compare_user(passed_user: User, user_list=Users) -> Dict: pass
+
+
+def get_user_by_uid(uid: int, users: Users) -> Users: pass
