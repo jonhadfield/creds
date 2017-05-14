@@ -33,7 +33,7 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 requires = []
-test_requirements = ['pytest>=2.9.2', 'pytest-cov>=2.3.1', 'PyYAML>=3.11', 'six']
+test_requirements = ['pytest>=2.9.2', 'pytest-cov>=2.3.1', 'PyYAML>=3.11', 'boto', 'boto3', 'moto', 'mock']
 
 with open('lib/creds/__init__.py', 'r') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',

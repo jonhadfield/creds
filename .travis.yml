@@ -1,5 +1,4 @@
 sudo: required
-dist: precise
 language: python
 python:
   - "3.5"
@@ -8,6 +7,9 @@ python:
   - "2.7"
   - "2.6"
   - "pypy"
+env:
+  global:
+    - BOTO_CONFIG=/doesnotexist
 install:
   - pip install coveralls
   - pip install tox-travis

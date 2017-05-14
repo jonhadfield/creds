@@ -5,6 +5,10 @@ from __future__ import (absolute_import, unicode_literals)
 import getpass
 import os
 import shlex
+from moto import mock_s3
+import yaml
+from boto3 import Session
+import pytest
 
 from creds.constants import (LINUX_CMD_USERADD, LINUX_CMD_USERDEL,
                              LINUX_CMD_GROUP_ADD, FREEBSD_CMD_PW)
@@ -14,7 +18,6 @@ from creds.users import (Users, User)
 from creds.utils import (execute_command, sudo_check, get_platform, remove_sudoers_entry)
 from external.six import text_type
 from .sample_data import PUBLIC_KEYS
-import pytest
 
 # TODO: Detect based on OS
 USERMOD = '/usr/sbin/usermod'
@@ -26,6 +29,33 @@ GROUPDEL = '/usr/sbin/groupdel'
 PLATFORM = get_platform()
 
 CURRENT_USER = getpass.getuser()
+
+
+@mock_s3
+def test_execute_plan_to_create_user_with_downloaded_yaml():
+    """ Create a new user from downloaded YAML file """
+    delete_test_user_and_group()
+    session = Session()
+    s3_client = session.client('s3')
+    test_user_1 = open(os.path.join(os.path.dirname(__file__), 'test_user_1.yml')).read()
+    s3_client.create_bucket(Bucket='test')
+    s3_client.put_object(Bucket='test', Key='test.yml',Body=test_user_1)
+    response = s3_client.get_object(Bucket='test', Key='test.yml')
+    contents = response['Body'].read()
+    yaml_content = yaml.load(contents)
+    current_users = Users.from_passwd()
+    provided_users = Users.from_dict(yaml_content)
+    plan = create_plan(existing_users=current_users, proposed_users=provided_users, manage_home=False,
+                       protected_users=['travis', 'couchdb', 'ubuntu', 'nginx', 'hadfielj', 'vagrant', CURRENT_USER])
+    execute_plan(plan=plan)
+    updated_users = Users.from_passwd()
+    updated_user = updated_users.describe_users(users_filter=dict(name='dummy'))
+    assert len(updated_user) == 1
+    assert updated_user[0].name == 'dummy'
+    assert updated_user[0].gecos == '\"dummy (user) test\"'
+    assert not updated_user[0].public_keys
+    assert updated_user[0].sudoers_entry == 'ALL=(ALL:ALL) ALL'
+    delete_test_user_and_group()
 
 
 def test_execute_plan_to_create_user_with_invalid_sudoers_entry():
