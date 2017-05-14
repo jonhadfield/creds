@@ -154,10 +154,13 @@ class Users(MutableSequence):
         try:
             import yaml
         except ImportError:  # pragma: no cover
+            yaml = None
+        if not yaml:
             import sys
             sys.exit('PyYAML is not installed, but is required in order to parse YAML files.'
                      '\nTo install, run:\n$ pip install PyYAML\nor visit'
                      ' http://pyyaml.org/wiki/PyYAML for instructions.')
+
         with io.open(file_path, encoding=text_type('utf-8')) as stream:
             users_yaml = yaml.safe_load(stream)
             if isinstance(users_yaml, dict):
