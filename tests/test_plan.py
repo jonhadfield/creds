@@ -185,7 +185,7 @@ def test_create_and_execute_plan_to_create_new_user_with_sudo_all():
     delete_test_user_and_group()
     create_test_group()
     current_users = Users.from_passwd()
-    provided_users = Users(oktypes=User)
+    provided_users = Users()
 
     public_keys = [PublicKey(
         b64encoded=PUBLIC_KEYS[0]['encoded'])]

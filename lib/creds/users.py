@@ -222,7 +222,6 @@ class Users(MutableSequence):
                               shell=user_dict.get('shell'),
                               public_keys=public_keys,
                               sudoers_entry=user_dict.get('sudoers_entry')))
-
         return users
 
     def to_dict(self):

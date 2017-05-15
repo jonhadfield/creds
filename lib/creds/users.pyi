@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from typing import List, Dict, AnyStr, Optional, Any, Type, MutableSequence
-from typing import TypeVar, Generic
+from typing import List, Dict, AnyStr, Optional, Any, MutableSequence
 
 from creds.ssh import PublicKey
 
@@ -25,15 +24,10 @@ class User(object):
     def to_dict(self) -> dict: pass
 
 
-T = TypeVar('T')
-
-U = TypeVar('U', bound=User)
-
-
-class Users(MutableSequence[T]):
-    def __init__(self, oktypes: Optional[Type[U]]) -> None:
+class Users(MutableSequence):
+    def __init__(self) -> None:
         self._user_list = list()
-        self.oktypes = oktypes
+        self.oktypes = User
 
     def describe_users(self, users_filter: Dict) -> List: pass
 
@@ -62,11 +56,11 @@ class Users(MutableSequence[T]):
     @classmethod
     def from_json(cls, file_path: str) -> List: pass
 
-    @classmethod
-    def from_passwd(cls, uid_min: int, uid_max: int) -> List: pass
+    @staticmethod
+    def from_passwd(uid_min: int, uid_max: int) -> Users: pass
 
     @staticmethod
-    def construct_user_list(raw_users: dict) -> Generic[T]: pass
+    def construct_user_list(raw_users: dict) -> Users: pass
 
 
 def generate_add_user_command(proposed_user: User, manage_home: bool) -> List[str]: pass
