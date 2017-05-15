@@ -4,6 +4,13 @@ Change Log
 
 This lists the changes made with each release.
 
+
+`1.0.15`_ (2017-05-15)
+----------------------
+
+* Fix potential race condition.
+
+
 `1.0.14`_ (2017-01-27)
 ----------------------
 
