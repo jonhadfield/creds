@@ -76,3 +76,4 @@ ignore:
     plan = create_plan(existing_users=existing_users, proposed_users=proposed_users,
                        purge_undefined=True, protected_users=['rod', 'jane', 'freddy'])
 
+
