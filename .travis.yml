@@ -1,18 +1,23 @@
 sudo: required
 language: python
 python:
+  - "3.6"
   - "3.5"
   - "3.4"
-  - "3.3"
   - "2.7"
-  - "2.6"
   - "pypy"
+#matrix:
+#  include:
+#    - python: 3.7
+#      dist: xenial
+#      sudo: required
 env:
   global:
     - BOTO_CONFIG=/doesnotexist
 install:
   - pip install coveralls
-  - pip install tox-travis
+  - pip install tox==2.7.0
+  - pip install tox-travis==0.8
 script:
   - tox
 after_success:

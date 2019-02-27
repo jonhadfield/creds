@@ -5,10 +5,11 @@ from __future__ import (absolute_import, unicode_literals)
 import getpass
 import os
 import shlex
-from moto import mock_s3
+
+import pytest
 import yaml
 from boto3 import Session
-import pytest
+from moto import mock_s3
 
 from creds.constants import (LINUX_CMD_USERADD, LINUX_CMD_USERDEL,
                              LINUX_CMD_GROUP_ADD, FREEBSD_CMD_PW)
@@ -39,7 +40,7 @@ def test_execute_plan_to_create_user_with_downloaded_yaml():
     s3_client = session.client('s3')
     test_user_1 = open(os.path.join(os.path.dirname(__file__), 'test_user_1.yml')).read()
     s3_client.create_bucket(Bucket='test')
-    s3_client.put_object(Bucket='test', Key='test.yml',Body=test_user_1)
+    s3_client.put_object(Bucket='test', Key='test.yml', Body=test_user_1)
     response = s3_client.get_object(Bucket='test', Key='test.yml')
     contents = response['Body'].read()
     yaml_content = yaml.load(contents)
