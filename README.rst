@@ -5,9 +5,6 @@
     :target: https://coveralls.io/github/jonhadfield/creds?branch=master
 .. image:: https://travis-ci.org/jonhadfield/creds.svg?branch=master
     :target: https://travis-ci.org/jonhadfield/creds
-.. image:: https://landscape.io/github/jonhadfield/creds/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/jonhadfield/creds/master
-   :alt: Code Health
 
 Creds
 =====
