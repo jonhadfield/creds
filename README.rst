@@ -1,10 +1,13 @@
 .. image:: https://readthedocs.org/projects/creds/badge/?version=master
-    :target: http://creds.readthedocs.io/en/master/?badge=master
-    :alt: Documentation Status
+     :target: https://creds.readthedocs.io/en/master/?badge=master
+     :alt: Documentation Status
 .. image:: https://coveralls.io/repos/github/jonhadfield/creds/badge.svg?branch=master
     :target: https://coveralls.io/github/jonhadfield/creds?branch=master
+.. image:: https://circleci.com/gh/jonhadfield/creds.svg?style=svg
+    :target: https://circleci.com/gh/jonhadfield/creds
 .. image:: https://travis-ci.org/jonhadfield/creds.svg?branch=master
     :target: https://travis-ci.org/jonhadfield/creds
+
 
 Creds
 =====
